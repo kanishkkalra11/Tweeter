@@ -40,8 +40,54 @@ def execute_query(connection, query):
 
 #CLI
 def home_page(username, client_socket):
-    #TODO add CLI for homepage here
+    while(True):
+        socket_client.send(
+"""
+Hi!!!!!
+Options: (Reply with)
+1: News feed (Recent Tweets/Updates)
+2: Your Pinned Tweets
+3: Followers List
+4: Following List
+5: Search a registered user 
+6: View Tweets by hashtags (Top 5 trending will be shown)
+7: Post a Tweet
+0: Logout
+""".encode())
+        option = socket_client.recv(1024).decode()
+        if(option == "1"):
+            recent_tweets(DATABASE,username, socket_client) 
+        # Display another menu (Enter the tweet ID of the tweet to Retweet) to user when he chooses option 1
+        
+        elif(option == "2"):
+            pinned_tweets(DATABASE,username, socket_client) 
+        
+        elif(option == "3"):
+            followers_list(DATABASE,username,socket_client)
+            # show active/online followers
+            # give user a chance to delete a follower
+
+        elif(option == "4"):
+            following_list(DATABASE,username,socket_client)
+            # give him option to unfollow
+
+        elif(option == "5"):
+            registered_users(DATABASE,username,socket_client)
+            # allow him to follow/unfollow that user
+
+        elif(option == "6"):
+            hashtags_and_tweets(DATABASE,username,socket_client)
+        
+        elif(option == "7"):
+            post_tweet(DATABASE,username,socket_client)
+            
+        elif(option == "0"):
+            return
+        
+        else:
+            socket_client.send("Invalid Option!".encode())
     return
+    
 
 #client thread
 
