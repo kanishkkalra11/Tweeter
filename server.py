@@ -26,6 +26,7 @@ server_port = 12345
 MAX_USERS = 32
 
 # import databases
+pw = "password"
 connection = create_db_connection("localhost", "root", pw, "Tweeter")
 
 def execute_query(connection, query):
@@ -46,6 +47,8 @@ def home_page(username, client_socket):
 
 def client_thread(client_socket, address):
     user = authenticate(client_socket) #TODO write code for authenticate in utils
+    #TODO mark user as online
+    QUERY = ""
     execute_query(connection, QUERY)
     home_page(user, client_socket) #TODO write code for home_page 
     #TODO mark user as offline
