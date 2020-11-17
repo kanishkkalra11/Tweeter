@@ -2,6 +2,23 @@ import socket
 import time
 import _thread
 from utils import *
+import mysql.connector
+from mysql.connector import Error
+
+def create_db_connection(host_name, user_name, user_password, db_name):
+    connection = None
+    try:
+        connection = mysql.connector.connect(
+            host=host_name,
+            user=user_name,
+            passwd=user_password,
+            database=db_name
+        )
+        print("MySQL Database connection successful")
+    except Error as err:
+        print(f"Error: '{err}'")
+
+    return connection
 
 #server configurations
 server_ip = socket.gethostname()
@@ -9,7 +26,16 @@ server_port = 12345
 MAX_USERS = 32
 
 # import databases
+connection = create_db_connection("localhost", "root", pw, "Tweeter")
 
+def execute_query(connection, query):
+    cursor = connection.cursor()
+    try:
+        cursor.execute(query)
+        connection.commit()
+        print("Query successful")
+    except Error as err:
+        print(f"Error: '{err}'")
 
 #CLI
 def home_page(username, client_socket):
@@ -20,7 +46,7 @@ def home_page(username, client_socket):
 
 def client_thread(client_socket, address):
     user = authenticate(client_socket) #TODO write code for authenticate in utils
-    #TODO mark user as online
+    execute_query(connection, QUERY)
     home_page(user, client_socket) #TODO write code for home_page 
     #TODO mark user as offline
     print(f"Closing client thread: {address}")
