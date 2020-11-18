@@ -41,7 +41,7 @@ def execute_query(connection, query):
 #CLI
 def home_page(username, client_socket):
     while(True):
-        socket_client.send(
+        client_socket.send(
 """
 Hi!!!!!
 Options: (Reply with)
@@ -54,38 +54,38 @@ Options: (Reply with)
 7: Post a Tweet
 0: Logout
 """.encode())
-        option = socket_client.recv(1024).decode()
+        option = client_socket.recv(1024).decode()
         if(option == "1"):
-            recent_tweets(DATABASE,username, socket_client) 
+            recent_tweets( ,username, client_socket) 
         # Display another menu (Enter the tweet ID of the tweet to Retweet) to user when he chooses option 1
         
         elif(option == "2"):
-            pinned_tweets(DATABASE,username, socket_client) 
+            pinned_tweets( ,username, client_socket) 
         
         elif(option == "3"):
-            followers_list(DATABASE,username,socket_client)
+            followers_list( ,username,client_socket)
             # show active/online followers
             # give user a chance to delete a follower
 
         elif(option == "4"):
-            following_list(DATABASE,username,socket_client)
+            following_list( ,username,client_socket)
             # give him option to unfollow
 
         elif(option == "5"):
-            registered_users(DATABASE,username,socket_client)
+            registered_users( ,username,client_socket)
             # allow him to follow/unfollow that user
 
         elif(option == "6"):
-            hashtags_and_tweets(DATABASE,username,socket_client)
+            hashtags_and_tweets( ,username,client_socket)
         
         elif(option == "7"):
-            post_tweet(DATABASE,username,socket_client)
+            post_tweet( ,username,client_socket)
             
         elif(option == "0"):
             return
         
         else:
-            socket_client.send("Invalid Option!".encode())
+            client_socket.send("Invalid Option!".encode())
     return
     
 
