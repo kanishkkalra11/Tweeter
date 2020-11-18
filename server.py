@@ -56,30 +56,30 @@ Options: (Reply with)
 """.encode())
         option = client_socket.recv(1024).decode()
         if(option == "1"):
-            recent_tweets( ,username, client_socket) 
+            recent_tweets(client_socket) 
         # Display another menu (Enter the tweet ID of the tweet to Retweet) to user when he chooses option 1
         
         elif(option == "2"):
-            pinned_tweets( ,username, client_socket) 
+            pinned_tweets(client_socket) 
         
         elif(option == "3"):
-            followers_list( ,username,client_socket)
+            followers_list(client_socket)
             # show active/online followers
             # give user a chance to delete a follower
 
         elif(option == "4"):
-            following_list( ,username,client_socket)
+            following_list(client_socket)
             # give him option to unfollow
 
         elif(option == "5"):
-            registered_users( ,username,client_socket)
+            registered_users(client_socket)
             # allow him to follow/unfollow that user
 
         elif(option == "6"):
-            hashtags_and_tweets( ,username,client_socket)
+            hashtags_and_tweets(client_socket)
         
         elif(option == "7"):
-            post_tweet( ,username,client_socket)
+            post_tweet(client_socket)
             
         elif(option == "0"):
             return
