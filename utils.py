@@ -55,62 +55,70 @@ def authenticate(client_socket):
 
     return username
 
-
-def recent_tweets(DATABASE,username, socket_client):
+#TODO database input for func
+def recent_tweets(DATABASE,username, client_socket):
 #TODO
-    socket_client.send(
-    """
-    Welcome to Mini-Face: (Reply with)
-    1: Enter the Tweet ID of Tweet you want to retweet
-    2: Home Page
-    """.encode())
-        response = socket_client.recv(1024).decode()
+    while(True):
+        client_socket.send(
+        """
+        Welcome to Mini-Face: (Reply with)
+        1: Enter the Tweet ID of Tweet you want to retweet
+        2: Home Page
+        """.encode())
+        response = client_socket.recv(1024).decode()
 
-
-def pinned_tweets(DATABASE,username, socket_client):
+#TODO database input for func
+def pinned_tweets(DATABASE,username, client_socket):
 #TODO
 
-
-def followers_list(DATABASE,username,socket_client):
+#TODO database input for func
+def followers_list(DATABASE,username,client_socket):
     # show active/online followers
     # give user a chance to delete a follower
     #TODO
-    socket_client.send(
-    """
-    Welcome to Mini-Face: (Reply with)
-    1: Do you want to delete a follower? Which one?
-    2: Home Page
-    """.encode())
-        response = socket_client.recv(1024).decode()
+    while(True):
+        client_socket.send(
+        """
+        Welcome to Mini-Face: (Reply with)
+        1: Do you want to delete a follower? Which one?
+        2: Home Page
+        """.encode())
+        response = client_socket.recv(1024).decode()
 
-
-def following_list(DATABASE,username,socket_client):
+#TODO database input for func
+def following_list(DATABASE,username,client_socket):
     # give him option to unfollow
     # list active/offline also
     #TODO
-    socket_client.send(
-    """
-    Welcome to Mini-Face: (Reply with)
-    1: Do you want to unfollow a user? Which one?
-    2: Home Page
-    """.encode())
-        response = socket_client.recv(1024).decode()
+    While (True):
+        client_socket.send(
+        """
+        Welcome to Mini-Face: (Reply with)
+        1: Do you want to unfollow a user? Which one?
+        2: Home Page
+        """.encode())
+        response = client_socket.recv(1024).decode()
 
-def registered_users(DATABASE,username,socket_client):
+#TODO database input for func
+def registered_users(DATABASE,username,client_socket):
     # allow him to follow/unfollow that user
-    """
-    Welcome to Mini-Face: (Reply with)
-    1: Do you want to follow this user? 
-    2: Do you want to unfollow this user?
-    4: Do you want to view his tweets both pinned and unpinned will get displayed?
-    5: Home Page
-    """.encode())
-        response = socket_client.recv(1024).decode()
+    While (True):
+        client_socket.send(
+        """
+        Welcome to Mini-Face: (Reply with)
+        1: Do you want to follow this user? 
+        2: Do you want to unfollow this user?
+        4: Do you want to view his tweets both pinned and unpinned will get displayed?
+        5: Home Page
+        """.encode())
+        response = client_socket.recv(1024).decode()
 
-def hashtags_and_tweets(DATABASE,username,socket_client):
+#TODO database input for func       
+def hashtags_and_tweets(DATABASE,username,client_socket):
     #TODO
     # Display 5 trending tweets skip one line and then display the tweets with that mentioned hashtags
 
-def post_tweet(DATABASE,username,socket_client):
+#TODO database input for func    
+def post_tweet(DATABASE,username,client_socket):
     #TODO
     # post
