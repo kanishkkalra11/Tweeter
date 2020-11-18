@@ -65,7 +65,7 @@ def recent_tweets(client_socket):
         1: Enter the Tweet ID of Tweet you want to retweet
         2: Home Page
         """.encode())
-        response = client_socket.recv(1024).decode()
+        response = client_socket.recv(BUFF).decode()
     return
 
 #TODO database input for func
@@ -85,7 +85,7 @@ def followers_list(client_socket):
         1: Do you want to delete a follower? Which one?
         2: Home Page
         """.encode())
-        response = client_socket.recv(1024).decode()
+        response = client_socket.recv(BUFF).decode()
     return
 
 #TODO database input for func
@@ -100,7 +100,7 @@ def following_list(client_socket):
         1: Do you want to unfollow a user? Which one?
         2: Home Page
         """.encode())
-        response = client_socket.recv(1024).decode()
+        response = client_socket.recv(BUFF).decode()
     return
 
 #TODO database input for func
@@ -115,7 +115,7 @@ def registered_users(client_socket):
         4: Do you want to view his tweets both pinned and unpinned will get displayed?
         5: Home Page
         """.encode())
-        response = client_socket.recv(1024).decode()
+        response = client_socket.recv(BUFF).decode()
     return
 
 #TODO database input for func       
