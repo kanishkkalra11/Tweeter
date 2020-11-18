@@ -92,7 +92,7 @@ def home_page(db_conn, username, client_socket):
 #client thread
 
 def client_thread(db_conn, client_socket, address):
-    user = authenticate(client_socket) 
+    user = authenticate(db_conn, client_socket) 
     mark_user_online(db_conn, user)
     home_page(db_conn, user, client_socket) 
     mark_user_offline(db_conn, user)
