@@ -44,7 +44,7 @@ def home_page(username, client_socket):
         client_socket.send(
 """
 Hi!!!!!
-Options: (Reply with)
+Please reply with an integer:
 1: News feed (Recent Tweets/Updates)
 2: Your Pinned Tweets
 3: Followers List
