@@ -56,7 +56,7 @@ def authenticate(client_socket):
     return username
 
 #TODO database input for func
-def recent_tweets(DATABASE,username, client_socket):
+def recent_tweets(client_socket):
 #TODO
     while(True):
         client_socket.send(
@@ -68,11 +68,11 @@ def recent_tweets(DATABASE,username, client_socket):
         response = client_socket.recv(1024).decode()
 
 #TODO database input for func
-def pinned_tweets(DATABASE,username, client_socket):
+def pinned_tweets(client_socket):
 #TODO
 
 #TODO database input for func
-def followers_list(DATABASE,username,client_socket):
+def followers_list(client_socket):
     # show active/online followers
     # give user a chance to delete a follower
     #TODO
@@ -86,7 +86,7 @@ def followers_list(DATABASE,username,client_socket):
         response = client_socket.recv(1024).decode()
 
 #TODO database input for func
-def following_list(DATABASE,username,client_socket):
+def following_list(client_socket):
     # give him option to unfollow
     # list active/offline also
     #TODO
@@ -100,7 +100,7 @@ def following_list(DATABASE,username,client_socket):
         response = client_socket.recv(1024).decode()
 
 #TODO database input for func
-def registered_users(DATABASE,username,client_socket):
+def registered_users(client_socket):
     # allow him to follow/unfollow that user
     While (True):
         client_socket.send(
@@ -114,11 +114,11 @@ def registered_users(DATABASE,username,client_socket):
         response = client_socket.recv(1024).decode()
 
 #TODO database input for func       
-def hashtags_and_tweets(DATABASE,username,client_socket):
+def hashtags_and_tweets(client_socket):
     #TODO
     # Display 5 trending tweets skip one line and then display the tweets with that mentioned hashtags
 
 #TODO database input for func    
-def post_tweet(DATABASE,username,client_socket):
+def post_tweet(client_socket):
     #TODO
     # post
