@@ -1,9 +1,6 @@
-#libs
-BUFF = 1024 #buffer size
+from dataqueries import *
 
-def register_new_user(username, password):
-    #TODO add new user to database
-    return
+BUFF = 1024 #buffer size
 
 def authenticate(client_socket):
     #TODO login/register here
@@ -24,7 +21,7 @@ def authenticate(client_socket):
             client_socket.send("Password: ".encode())
             password = client_socket.recv(BUFF).decode()
             
-            if (1): #TODO check username exists and password matches
+            if (check_user_pass(username, password)): 
                 client_socket.send("Login successful. Welcome back.")
                 break
             else:
@@ -36,7 +33,7 @@ def authenticate(client_socket):
             while True:
                 client_socket.send("Enter new username: ".encode())
                 username = client_socket.recv(BUFF).decode()
-                if (1): #TODO check if username taken already
+                if (check_user_exists(username)):
                     client_socket.send("Username not available".encode())
                     continue
                 client_socket.send("Enter new password: ".encode())
@@ -47,7 +44,7 @@ def authenticate(client_socket):
                     client_socket.send("Password does not match".encode())
                 else:
                     break
-            register_new_user(username, password) #TODO write register_new_user function in utils
+            register_new_user(username, password)
             break
 
         else:
@@ -103,32 +100,55 @@ def following_list(client_socket):
         response = client_socket.recv(BUFF).decode()
     return
 
-#TODO database input for func
-def registered_users(client_socket):
-    # allow him to follow/unfollow that user
+def follow_user(client_socket, username):
+    return
+
+def unfollow_user(client_socket, username):
+    return
+
+def remove_follower(client_socket, username):
+    return
+
+def display_tweets_of_user(client_socket, username):
+    return
+
+def chat_with_user(client_socket, username):
+    return
+
+def search_registered_users(client_socket):
+    client_socket.send(
+    """
+    Enter username: 
+    """.encode())
+    username = client_socket.recv(BUFF).decode()
     while (True):
         client_socket.send(
         """
-        Please reply with an integer:
-        1: Do you want to follow this user? 
-        2: Do you want to unfollow this user?
-        4: Do you want to view his tweets both pinned and unpinned will get displayed?
-        5: Home Page
+        Please select one:
+        1: Follow this user 
+        2: Unfollow this user
+        3: Remove user from my followers
+        4: Display users' tweets
+        5: Chat with user
+        6: Home Page
         """.encode())
         response = client_socket.recv(BUFF).decode()
-        return
-
-def get_trending_hashtags():
-    #TODO get top 5 trending hashtags as a list
-    hashtags = []
-    return hashtags
-
-def get_tweets_by_hashtag(hashtag):
-    #TODO return a list of max 10 recent tweets with input hashtag
-    tweets = []
-    return tweets
-
-#TODO database input for func       
+        if (response==1):
+            follow_user(client_socket, username)
+        elif (response==2):
+            unfollow_user(client_socket, username)
+        elif (response==3):
+            remove_follower(client_socket, username)
+        elif (response==4):
+            display_tweets_of_user(client_socket, username)
+        elif (response==5):
+            chat_with_user(client_socket, username)
+        elif (response==6):
+            break
+        else:
+            client_socket.send("Enter a valid response.".encode())
+    return
+  
 def hashtags_and_tweets(client_socket):
     #TODO Display 5 trending tweets skip one line and then display the tweets with that mentioned hashtags
     trending = get_trending_hashtags()
@@ -155,8 +175,7 @@ def hashtags_and_tweets(client_socket):
         output += ">> " + tweet + "\n"
     client_socket.send(output.encode())    
     return
-
-#TODO database input for func    
+   
 def post_tweet(client_socket):
     #TODO
     # post

@@ -72,7 +72,7 @@ def home_page(username, client_socket):
             # give him option to unfollow
 
         elif(option == "5"):
-            registered_users(client_socket)
+            search_registered_users(client_socket)
             # allow him to follow/unfollow that user
 
         elif(option == "6"):
