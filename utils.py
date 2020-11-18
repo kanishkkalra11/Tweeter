@@ -61,7 +61,7 @@ def recent_tweets(client_socket):
     while(True):
         client_socket.send(
         """
-        Welcome to Mini-Face: (Reply with)
+        Please reply with an integer:
         1: Enter the Tweet ID of Tweet you want to retweet
         2: Home Page
         """.encode())
@@ -81,7 +81,7 @@ def followers_list(client_socket):
     while(True):
         client_socket.send(
         """
-        Welcome to Mini-Face: (Reply with)
+        Please reply with an integer:
         1: Do you want to delete a follower? Which one?
         2: Home Page
         """.encode())
@@ -96,7 +96,7 @@ def following_list(client_socket):
     while (True):
         client_socket.send(
         """
-        Welcome to Mini-Face: (Reply with)
+        Please reply with an integer:
         1: Do you want to unfollow a user? Which one?
         2: Home Page
         """.encode())
@@ -109,7 +109,7 @@ def registered_users(client_socket):
     while (True):
         client_socket.send(
         """
-        Welcome to Mini-Face: (Reply with)
+        Please reply with an integer:
         1: Do you want to follow this user? 
         2: Do you want to unfollow this user?
         4: Do you want to view his tweets both pinned and unpinned will get displayed?
