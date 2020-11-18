@@ -2,7 +2,7 @@ from dataqueries import *
 
 BUFF = 1024 #buffer size
 
-def authenticate(client_socket):
+def authenticate(db_conn, client_socket):
     #TODO login/register here
     while True:
         client_socket.send(
@@ -21,7 +21,7 @@ def authenticate(client_socket):
             client_socket.send("Password: ".encode())
             password = client_socket.recv(BUFF).decode()
             
-            if (check_user_pass(username, password)): 
+            if (check_user_pass(db_conn, username, password)): 
                 client_socket.send("Login successful. Welcome back.")
                 break
             else:
@@ -33,7 +33,7 @@ def authenticate(client_socket):
             while True:
                 client_socket.send("Enter new username: ".encode())
                 username = client_socket.recv(BUFF).decode()
-                if (check_user_exists(username)):
+                if (check_user_exists(db_conn, username)):
                     client_socket.send("Username not available".encode())
                     continue
                 client_socket.send("Enter new password: ".encode())
@@ -44,7 +44,7 @@ def authenticate(client_socket):
                     client_socket.send("Password does not match".encode())
                 else:
                     break
-            register_new_user(username, password)
+            register_new_user(db_conn, username, password)
             break
 
         else:
@@ -115,7 +115,7 @@ def display_tweets_of_user(client_socket, username):
 def chat_with_user(client_socket, username):
     return
 
-def search_registered_users(client_socket):
+def search_registered_users(db_conn, client_socket):
     client_socket.send(
     """
     Enter username: 
@@ -149,9 +149,9 @@ def search_registered_users(client_socket):
             client_socket.send("Enter a valid response.".encode())
     return
   
-def hashtags_and_tweets(client_socket):
+def hashtags_and_tweets(db_conn, client_socket):
     #TODO Display 5 trending tweets skip one line and then display the tweets with that mentioned hashtags
-    trending = get_trending_hashtags()
+    trending = get_trending_hashtags(db_conn)
     client_socket.send(
         f"""
         TOP 5 Trending Hashtags:
@@ -165,7 +165,7 @@ def hashtags_and_tweets(client_socket):
         """.encode()
     )
     response = client_socket.recv(BUFF).decode()
-    tweets = get_tweets_by_hashtag(response)
+    tweets = get_tweets_by_hashtag(db_conn, response)
     # we will only display max 10 recent tweets of that hashtag
     output = f"""
         Recent tweets with {response}:

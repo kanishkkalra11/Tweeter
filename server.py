@@ -27,19 +27,19 @@ MAX_USERS = 32
 
 # import databases
 pw = "password"
-connection = create_db_connection("localhost", "root", pw, "Tweeter")
+db_conn = create_db_connection("localhost", "root", pw, "Tweeter")
 
-def execute_query(connection, query):
-    cursor = connection.cursor()
-    try:
-        cursor.execute(query)
-        connection.commit()
-        print("Query successful")
-    except Error as err:
-        print(f"Error: '{err}'")
+# def execute_query(connection, query):
+#     cursor = connection.cursor()
+#     try:
+#         cursor.execute(query)
+#         connection.commit()
+#         print("Query successful")
+#     except Error as err:
+#         print(f"Error: '{err}'")
 
 #CLI
-def home_page(username, client_socket):
+def home_page(db_conn, username, client_socket):
     while(True):
         client_socket.send(
         """
@@ -72,11 +72,11 @@ def home_page(username, client_socket):
             # give him option to unfollow
 
         elif(option == "5"):
-            search_registered_users(client_socket)
+            search_registered_users(db_conn, client_socket)
             # allow him to follow/unfollow that user
 
         elif(option == "6"):
-            hashtags_and_tweets(client_socket)
+            hashtags_and_tweets(db_conn, client_socket)
         
         elif(option == "7"):
             post_tweet(client_socket)
@@ -91,13 +91,11 @@ def home_page(username, client_socket):
 
 #client thread
 
-def client_thread(client_socket, address):
-    user = authenticate(client_socket) #TODO write code for authenticate in utils
-    #TODO mark user as online
-    QUERY = ""
-    execute_query(connection, QUERY)
-    home_page(user, client_socket) #TODO write code for home_page 
-    #TODO mark user as offline
+def client_thread(db_conn, client_socket, address):
+    user = authenticate(client_socket) 
+    mark_user_online(db_conn, user)
+    home_page(db_conn, user, client_socket) 
+    mark_user_offline(db_conn, user)
     print(f"Closing client thread: {address}")
     client_socket.send("Thanks for using Tweeter. See you soon!")
     client_socket.shutdown(2)
