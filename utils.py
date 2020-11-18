@@ -118,10 +118,42 @@ def registered_users(client_socket):
         response = client_socket.recv(BUFF).decode()
         return
 
+def get_trending_hashtags():
+    #TODO get top 5 trending hashtags as a list
+    hashtags = []
+    return hashtags
+
+def get_tweets_by_hashtag(hashtag):
+    #TODO return a list of max 10 recent tweets with input hashtag
+    tweets = []
+    return tweets
+
 #TODO database input for func       
 def hashtags_and_tweets(client_socket):
-    #TODO
-    # Display 5 trending tweets skip one line and then display the tweets with that mentioned hashtags
+    #TODO Display 5 trending tweets skip one line and then display the tweets with that mentioned hashtags
+    trending = get_trending_hashtags()
+    client_socket.send(
+        f"""
+        TOP 5 Trending Hashtags:
+        {trending[0]}
+        {trending[1]}
+        {trending[2]}
+        {trending[3]}
+        {trending[4]}
+
+        Please enter the hashtag you want to search tweets by: (e.g. #modi)
+        """.encode()
+    )
+    response = client_socket.recv(BUFF).decode()
+    tweets = get_tweets_by_hashtag(response)
+    # we will only display max 10 recent tweets of that hashtag
+    output = f"""
+        Recent tweets with {response}:
+    
+        """
+    for tweet in tweets:
+        output += ">> " + tweet + "\n"
+    client_socket.send(output.encode())    
     return
 
 #TODO database input for func    
