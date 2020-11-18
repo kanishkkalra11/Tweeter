@@ -66,10 +66,12 @@ def recent_tweets(client_socket):
         2: Home Page
         """.encode())
         response = client_socket.recv(1024).decode()
+    return
 
 #TODO database input for func
 def pinned_tweets(client_socket):
 #TODO
+    return
 
 #TODO database input for func
 def followers_list(client_socket):
@@ -84,13 +86,14 @@ def followers_list(client_socket):
         2: Home Page
         """.encode())
         response = client_socket.recv(1024).decode()
+    return
 
 #TODO database input for func
 def following_list(client_socket):
     # give him option to unfollow
     # list active/offline also
     #TODO
-    While (True):
+    while (True):
         client_socket.send(
         """
         Welcome to Mini-Face: (Reply with)
@@ -98,11 +101,12 @@ def following_list(client_socket):
         2: Home Page
         """.encode())
         response = client_socket.recv(1024).decode()
+    return
 
 #TODO database input for func
 def registered_users(client_socket):
     # allow him to follow/unfollow that user
-    While (True):
+    while (True):
         client_socket.send(
         """
         Welcome to Mini-Face: (Reply with)
@@ -112,13 +116,16 @@ def registered_users(client_socket):
         5: Home Page
         """.encode())
         response = client_socket.recv(1024).decode()
+    return
 
 #TODO database input for func       
 def hashtags_and_tweets(client_socket):
     #TODO
     # Display 5 trending tweets skip one line and then display the tweets with that mentioned hashtags
+    return
 
 #TODO database input for func    
 def post_tweet(client_socket):
     #TODO
     # post
+    return

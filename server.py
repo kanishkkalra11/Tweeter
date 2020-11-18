@@ -42,18 +42,18 @@ def execute_query(connection, query):
 def home_page(username, client_socket):
     while(True):
         client_socket.send(
-"""
-Hi!!!!!
-Options: (Reply with)
-1: News feed (Recent Tweets/Updates)
-2: Your Pinned Tweets
-3: Followers List
-4: Following List
-5: Search a registered user 
-6: View Tweets by hashtags (Top 5 trending will be shown)
-7: Post a Tweet
-0: Logout
-""".encode())
+        """
+        Hi!!!!!
+        Options: (Reply with)
+        1: News feed (Recent Tweets/Updates)
+        2: Your Pinned Tweets
+        3: Followers List
+        4: Following List
+        5: Search a registered user 
+        6: View Tweets by hashtags (Top 5 trending will be shown)
+        7: Post a Tweet
+        0: Logout
+        """.encode())
         option = client_socket.recv(1024).decode()
         if(option == "1"):
             recent_tweets(client_socket) 
