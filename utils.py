@@ -116,7 +116,7 @@ def registered_users(client_socket):
         5: Home Page
         """.encode())
         response = client_socket.recv(BUFF).decode()
-    return
+        return
 
 #TODO database input for func       
 def hashtags_and_tweets(client_socket):

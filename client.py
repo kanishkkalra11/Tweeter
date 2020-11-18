@@ -1,32 +1,30 @@
 import socket
 import time
+import getpass
 
-buffer_size = [1024,2048,4096,8192] 
-i=1
-localport   = 12345
+BUFF = 1024
+PORT = 12345
+HOST = socket.gethostname()
 
 client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client_socket.connect((client_socket.gethostname() ,localport))
+client_socket.connect((HOST, PORT))
 
 print("Connected \n")
 
-client_socket.send(bytes("DONE","utf-8"))
-
-check = client_socket.recv(16)
-checkFlag = check.decode("utf-8")
-if checkFlag == "Yes":
-    data = client_socket.recv(buffer_size[i])
-    while data:
-        data = client_socket.recv(buffer_size[i])
-        print(data)
+while True:
+    data, addr = client_socket.recv(BUFF)
+    data = data.decode('utf-8')
+    print(data)
+    #TODO add exit condition
+    if (data=="Password: "):
+        input_ = getpass.getpass()
+        client_socket.send(input_.encode())
+    else:    
         input_ = input()
         client_socket.send(input_.encode())
-        print("Your response has been sent")
-else:
-    print("Error")
+
 
 client_socket.shutdown(2)
-print("Bbyee")
 client_socket.close()
 
 
