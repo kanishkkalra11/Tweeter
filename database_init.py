@@ -71,7 +71,6 @@ execute_query(connection, create_user_table)
 create_curids_table = """
 CREATE TABLE current_ids (
   tweets INT NOT NULL,
-  hashtags INT NOT NULL,
   chats INT NOT NULL
   );
  """
@@ -79,7 +78,7 @@ execute_query(connection, create_curids_table)
 
 create_tweets_table = """
 CREATE TABLE tweets (
-  tweet_id INT PRIMARY KEY AUTO_INCREMENT,
+  tweet_id INT PRIMARY KEY,
   tweet TEXT,
   username VARCHAR(256),
   hashtags TEXT,
@@ -136,6 +135,6 @@ execute_query(connection, insert_chat)
 
 insert_curids = """
 INSERT INTO current_ids VALUES
-(1, 1, 1);
+(1, 1);
 """
 execute_query(connection, insert_curids)
