@@ -8,7 +8,7 @@ Networks Course Project
 - [x] Search a user from registered users list
 - [x] Follow/ unfollow users
 - [x] Delete followers
-- [ ] Display list of online followers and following
+- [x] Display list of online followers and following
 - [ ] Post tweets with hashtags
 - [ ] Retweet a tweet
 - [x] Display trending hashtags
