@@ -41,7 +41,7 @@ db_conn = create_db_connection(MySQL_hostname, MySQL_username, MySQL_password, "
 
 
 #CLI
-def home_page(db_conn, username, client_socket):
+def home_page(db_conn, user, client_socket):
     while(True):
         client_socket.send(
         """
@@ -58,30 +58,30 @@ def home_page(db_conn, username, client_socket):
         """.encode())
         option = client_socket.recv(1024).decode()
         if(option == "1"):
-            recent_tweets(client_socket) 
+            news_feed(db_conn, client_socket, user) 
         # Display another menu (Enter the tweet ID of the tweet to Retweet) to user when he chooses option 1
         
         elif(option == "2"):
-            pinned_tweets(client_socket) 
+            pinned_tweets_list(db_conn, client_socket, user) 
         
         elif(option == "3"):
-            followers_list(client_socket)
+            followers_list(db_conn, client_socket, user)
             # show active/online followers
             # give user a chance to delete a follower
 
         elif(option == "4"):
-            following_list(client_socket)
+            following_list(db_conn, client_socket, user)
             # give him option to unfollow
 
         elif(option == "5"):
-            search_registered_users(db_conn, client_socket)
+            search_registered_users(db_conn, client_socket, user)
             # allow him to follow/unfollow that user
 
         elif(option == "6"):
             hashtags_and_tweets(db_conn, client_socket)
         
         elif(option == "7"):
-            post_tweet(client_socket)
+            post_tweet(db_conn, client_socket, user)
             
         elif(option == "0"):
             return

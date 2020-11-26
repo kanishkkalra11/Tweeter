@@ -53,7 +53,7 @@ def authenticate(db_conn, client_socket):
 
     return username
 
-def recent_tweets(client_socket):
+def news_feed(db_conn, client_socket, user):
     while(True):
         client_socket.send(
         """
@@ -64,39 +64,44 @@ def recent_tweets(client_socket):
         response = client_socket.recv(BUFF).decode()
     return
 
-#TODO database input for func
-def pinned_tweets(client_socket):
-#TODO
+def pinned_tweets_list(db_conn, client_socket, user):
+    pinned_tweets = get_pinned_tweets_of_user(db_conn, user) #TODO match func in dataqueries
+    output = f"""
+        Your pinned tweets:
+
+
+        """
+    for tweet in pinned_tweets:
+        output += format_tweet(tweet)
+    client_socket.send(output.encode())
     return
 
-#TODO database input for func
-def followers_list(client_socket):
+
+def followers_list(db_conn, client_socket, user):
     # show active/online followers
     # give user a chance to delete a follower
-    #TODO
-    while(True):
-        client_socket.send(
-        """
-        Please reply with an integer:
-        1: Do you want to delete a follower? Which one?
-        2: Home Page
-        """.encode())
-        response = client_socket.recv(BUFF).decode()
+    online_followers, other_followers = get_followers_list(db_conn, user) #TODO match with func in dataqueries
+    online_output=""
+    for f in online_followers:
+        online_output += ">> " + f + "\n"
+    for f in other_followers:
+        others_output += ">> " + f + "\n"
+    output = "Online Followers:\n{}Other Followers{}".format(online_output, others_output)
+    client_socket.send(output.encode())
     return
 
-#TODO database input for func
-def following_list(client_socket):
+
+def following_list(db_conn, client_socket, user):
     # give him option to unfollow
     # list active/offline also
-    #TODO
-    while (True):
-        client_socket.send(
-        """
-        Please reply with an integer:
-        1: Do you want to unfollow a user? Which one?
-        2: Home Page
-        """.encode())
-        response = client_socket.recv(BUFF).decode()
+    online_following, other_following = get_following_list(db_conn, user) #TODO match with func in dataqueries
+    online_output=""
+    for f in online_following:
+        online_output += ">> " + f + "\n"
+    for f in other_following:
+        others_output += ">> " + f + "\n"
+    output = "Online Following:\n{}Other Following{}".format(online_output, others_output)
+    client_socket.send(output.encode())
     return
 
 def follow_user(db_conn, user, client_socket, userInput):
@@ -273,7 +278,43 @@ def hashtags_and_tweets(db_conn, client_socket):
     client_socket.send(output.encode())    
     return
    
-def post_tweet(client_socket):
-    #TODO
-    # post
+def make_new_tweet(db_conn, client_socket, user):
+    client_socket.send("Enter the tweet: ".encode())
+    tweet_text = client_socket.recv(BUFF).decode()
+    if post_new_tweet(db_conn, user, tweet_text, None): #TODO match with func in dataqueries
+        client_socket.send("Your tweet has been posted.".encode())
+    return
+
+def retweet(db_conn, client_socket, user):
+    client_socket.send("Enter the tweet ID that you want to retweet: ".encode())
+    retweet_id = int(client_socket.recv(BUFF).decode())
+
+    retweet_text = format_tweet(get_tweet_by_id(db_conn, retweet_id)) #TODO match with func in dataqueries
+    retweet_output = "You are retweeting:\n{}".format(retweet_text)
+    client_socket.send(retweet_output.encode())
+
+    client_socket.send("Enter the tweet: ".encode())
+    tweet_text = client_socket.recv(BUFF).decode()
+    if post_new_tweet(db_conn, user, tweet_text, retweet_id): #TODO match with func in dataqueries
+        client_socket.send("Your retweet has been posted.".encode())
+    return
+
+def post_tweet(db_conn, client_socket, user):
+    client_socket.send(
+        f"""
+        Please select an option:
+        1: Write a new tweet
+        2: Retweet an existing tweet
+        3: Homepage
+        """
+    )
+    response = client_socket.recv(BUFF).decode()
+    if response==1:
+        make_new_tweet(db_conn, client_socket, user)
+    elif response==2:
+        retweet(db_conn, client_socket, user)
+    elif response==3:
+        break
+    else:
+        client_socket.send("Enter a valid response.".encode())
     return
