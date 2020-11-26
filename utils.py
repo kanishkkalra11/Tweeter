@@ -61,7 +61,7 @@ def news_feed(db_conn, client_socket, user):
     return
 
 def pinned_tweets_list(db_conn, client_socket, user):
-    pinned_tweets = get_pinned_tweets_of_user(db_conn, user) #TODO match func in dataqueries
+    pinned_tweets = get_pinned_tweets_of_user(db_conn, user)
     output = f"""
         Your pinned tweets:
 
@@ -75,7 +75,7 @@ def pinned_tweets_list(db_conn, client_socket, user):
 def followers_list(db_conn, client_socket, user):
     # show active/online followers
     # give user a chance to delete a follower
-    online_followers, other_followers = get_followers_list(db_conn, user) #TODO match with func in dataqueries
+    online_followers, other_followers = get_followers_list(db_conn, user)
     online_output=""
     for f in online_followers:
         online_output += ">> " + f + "\n"
@@ -88,7 +88,7 @@ def followers_list(db_conn, client_socket, user):
 def following_list(db_conn, client_socket, user):
     # give him option to unfollow
     # list active/offline also
-    online_following, other_following = get_following_list(db_conn, user) #TODO match with func in dataqueries
+    online_following, other_following = get_following_list(db_conn, user)
     online_output=""
     for f in online_following:
         online_output += ">> " + f + "\n"
@@ -273,7 +273,7 @@ def hashtags_and_tweets(db_conn, client_socket):
 def make_new_tweet(db_conn, client_socket, user):
     client_socket.send("Enter the tweet: ".encode())
     tweet_text = client_socket.recv(BUFF).decode()
-    if post_new_tweet(db_conn, user, tweet_text, None): #TODO match with func in dataqueries
+    if post_new_tweet(db_conn, user, tweet_text, None):
         client_socket.send("Your tweet has been posted.".encode())
     return
 
@@ -281,13 +281,13 @@ def retweet(db_conn, client_socket, user):
     client_socket.send("Enter the tweet ID that you want to retweet: ".encode())
     retweet_id = int(client_socket.recv(BUFF).decode())
 
-    retweet_text = format_tweet(get_tweet_by_id(db_conn, retweet_id)) #TODO match with func in dataqueries
+    retweet_text = format_tweet(get_tweet_by_id(db_conn, retweet_id))
     retweet_output = "You are retweeting:\n{}".format(retweet_text)
     client_socket.send(retweet_output.encode())
 
     client_socket.send("Enter the tweet: ".encode())
     tweet_text = client_socket.recv(BUFF).decode()
-    if post_new_tweet(db_conn, user, tweet_text, retweet_id): #TODO match with func in dataqueries
+    if post_new_tweet(db_conn, user, tweet_text, retweet_id):
         client_socket.send("Your retweet has been posted.".encode())
     return
 
