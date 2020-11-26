@@ -7,9 +7,10 @@ def execute_query(connection, query):
     cursor = connection.cursor()
     cursor.execute(query)
     connection.commit()
-    print("Query successful")
+    # print("Query successful")
     # except Error as err:
     #     print(f"Error: '{err}'")
+    return
 
 def read_query(connection, query):
     cursor = connection.cursor()
@@ -87,12 +88,12 @@ def get_tweets_by_hashtag(db_conn, hashtag):
     return retr
     # format => list of tweets, for each tweet => tweet_id, tweet, username, hashtags, timestamp, is_retweet, retweet_id
 
-def logout(db_conn, user):
-    change_status = "UPDATE users SET is_online = 0 WHERE username = {}".format(user)
+def logout(db_conn, username):
+    change_status = "UPDATE users SET is_online = 0 WHERE username = {}".format(username)
     execute_query(db_conn,change_status)
     return
 
-def get_tweets_by_username(db_conn, username):
+def get_tweets_of_user(db_conn, username):
     get_tweet_ids = "SELECT * FROM users WHERE username = {}".format(username)
     results = read_query(db_conn, get_tweet_ids)
     for result in results:
@@ -125,7 +126,7 @@ def get_tweets_by_username(db_conn, username):
     return retr
     # format => list of tweets, for each tweet => tweet_id, tweet, username, hashtags, timestamp, is_retweet, retweet_id
 
-def search_user(db_conn,username1,username2):
+def get_follow_update(db_conn,username1,username2):
 #username1 - me
 #username2 - other person
 #return format - bool(i follow him), bool(he follows me)
@@ -197,7 +198,7 @@ def get_following_list(db_conn,username):
             break
     return online_following,offline_following
 
-def your_pinned_tweets(db_conn,username):
+def get_pinned_tweets_of_user(db_conn,username):
     get_tweet_ids = "SELECT * FROM users WHERE username = {}".format(username)
     results = read_query(db_conn, get_tweet_ids)
     for result in results:
@@ -279,71 +280,106 @@ def post_tweet(db_conn,username,tweet):
     return
 
 # follow someone using my username1 and his username2
-def follow(db_conn,username1,username2):
-    results = read_query(db_conn, "SELECT * FROM users WHERE username = {}".format(username1))
-    for result in results:
-        result = list(result)
-        break
-    following = result[3]
-    if following is not NULL:
-        following = following + ',' + username2
-    else:
-        following = username2
-    execute_query(db_conn,"UPDATE users SET following = {} WHERE username = {}".format(following,username1))
-    results = read_query(db_conn, "SELECT * FROM users WHERE username = {}".format(username2))
-    for result in results:
-        result = list(result)
-    followers = result[2]
-    if followers is not NULL:
-        followers = followers + ',' + username1
-    else:
-        followers = username1
-    execute_query(db_conn,"UPDATE users SET followers = {} WHERE username = {}".format(followers,username2))
-    return
+def add_user_to_following(db_conn,username1,username2):
+    try:
+        results = read_query(db_conn, "SELECT * FROM users WHERE username = {}".format(username1))
+        for result in results:
+            result = list(result)
+            break
+        following = result[3]
+        if following is not NULL:
+            following = following + ',' + username2
+        else:
+            following = username2
+        execute_query(db_conn,"UPDATE users SET following = {} WHERE username = {}".format(following,username1))
+        results = read_query(db_conn, "SELECT * FROM users WHERE username = {}".format(username2))
+        for result in results:
+            result = list(result)
+        followers = result[2]
+        if followers is not NULL:
+            followers = followers + ',' + username1
+        else:
+            followers = username1
+        execute_query(db_conn,"UPDATE users SET followers = {} WHERE username = {}".format(followers,username2))
+        return True
+    except:
+        return False
+
+def rem_user_from_following(db_conn, username1, username2):
+    try:
+        results = read_query(db_conn, "SELECT * FROM users WHERE username = {}".format(username1))
+        for result in results:
+            result = list(result)
+            break
+        following = result[3]
+        try:
+            l = len(username2)
+            m = len(following)
+            for i in range(m):
+                if following[i:i+l] == username2:
+                    if i==0 and i+l==m:
+                        following = NULL
+                    elif i==0:
+                        following = following[l+1:]
+                    elif i+l==m:
+                        following = following[:i-1]
+                    else:
+                        following = following[:i] + following[l+1:]
+                    execute_query(db_conn,"UPDATE users SET following = {} WHERE username = {}".format(following,username1))
+                    break
+        except:
+            # do nothing
+        return True
+    except:
+        return False
 
 # delete follower using my username1 and his username2
-def del_follower(db_conn,username1,username2):
-    results = read_query(db_conn, "SELECT * FROM users WHERE username = {}".format(username1))
-    for result in results:
-        result = list(result)
-        break
-    followers = result[2]
+def rem_user_from_followers(db_conn,username1,username2):
     try:
-        l = len(username2)
-        m = len(followers)
-        for i in range(m):
-            if followers[i:i+l] == username2:
-                if i==0 and i+l==m:
-                    followers = NULL
-                elif i==0:
-                    followers = followers[l+1:]
-                elif i+l==m:
-                    followers = followers[:i-1]
-                else:
-                    followers = followers[:i] + followers[l+1:]
-                execute_query(db_conn,"UPDATE users SET followers = {} WHERE username = {}".format(followers,username1))
-                break
+        results = read_query(db_conn, "SELECT * FROM users WHERE username = {}".format(username1))
+        for result in results:
+            result = list(result)
+            break
+        followers = result[2]
+        try:
+            l = len(username2)
+            m = len(followers)
+            for i in range(m):
+                if followers[i:i+l] == username2:
+                    if i==0 and i+l==m:
+                        followers = NULL
+                    elif i==0:
+                        followers = followers[l+1:]
+                    elif i+l==m:
+                        followers = followers[:i-1]
+                    else:
+                        followers = followers[:i] + followers[l+1:]
+                    execute_query(db_conn,"UPDATE users SET followers = {} WHERE username = {}".format(followers,username1))
+                    break
+        except:
+            # do nothing
+        results = read_query(db_conn, "SELECT * FROM users WHERE username = {}".format(username2))
+        for result in results:
+            result = list(result)
+            break
+        following = result[3]
+        try:
+            l = len(username1)
+            m = len(following)
+            for i in range(m):
+                if following[i:i+l] == username1:
+                    if i==0 and i+l==m:
+                        following = NULL
+                    elif i==0:
+                        following = following[l+1:]
+                    elif i+l==m:
+                        following = following[:i-1]
+                    else:
+                        following = following[:i] + following[l+1:]
+                    execute_query(db_conn,"UPDATE users SET following = {} WHERE username = {}".format(following,username2))
+                    break
+        except:
+            # do nothing
+        return True
     except:
-        # do nothing
-    results = read_query(db_conn, "SELECT * FROM users WHERE username = {}".format(username2))
-    for result in results:
-        result = list(result)
-    following = result[3]
-    try:
-        l = len(username1)
-        m = len(following)
-        for i in range(m):
-            if following[i:i+l] == username1:
-                if i==0 and i+l==m:
-                    following = NULL
-                elif i==0:
-                    following = following[l+1:]
-                elif i+l==m:
-                    following = following[:i-1]
-                else:
-                    following = following[:i] + following[l+1:]
-                execute_query(db_conn,"UPDATE users SET following = {} WHERE username = {}".format(following,username2))
-                break
-    except:
-        # do nothing
-    return
+        return False
