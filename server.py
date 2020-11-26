@@ -154,10 +154,9 @@ except:
 change_status = "UPDATE users SET is_online = 1 WHERE username = {} AND password = {}".format(username,password)
 try:
     execute_query(db_conn,change_status)
-    # send new menu
-    ######################## NEED TO FIND A WAY TO STORE THIS USERNAME AND PASSWORD SOMEHOW FOR OTHER FUNCTIONALITIES #############
+    return True
 except:
-    # send response to client that the username does not exist or username and password does not match
+    return False
 
 # logout user
 change_status = "UPDATE users SET is_online = 0 WHERE username = {}".format(username)

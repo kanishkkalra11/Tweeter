@@ -5,9 +5,12 @@ def register_new_user(db_conn, username, password):
     return
 
 def check_user_pass(db_conn, username, password):
-    #TODO check username exists and password matches
-    # return true if all correct
-    return
+    change_status = "UPDATE users SET is_online = 1 WHERE username = {} AND password = {}".format(username,password)
+    try:
+        execute_query(db_conn,change_status)
+        return True
+    except:
+        return False
 
 def check_user_exists(db_conn, username):
     #TODO check if username taken already
