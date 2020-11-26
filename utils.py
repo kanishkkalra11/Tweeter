@@ -100,23 +100,23 @@ def following_list(client_socket):
     return
 
 def follow_user(db_conn, user, client_socket, userInput):
-    if add_user_to_following(db_conn, user, userInput): #TODO match with func in dataqueries 
+    if add_user_to_following(db_conn, user, userInput):
         client_socket.send("You are now following {}".format(userInput).encode())
     return
 
 def unfollow_user(db_conn, user, client_socket, userInput):
-    if rem_user_from_following(db_conn, user, userInput): #TODO match with func in dataqueries 
+    if rem_user_from_following(db_conn, user, userInput):
         client_socket.send("You have unfollowed {}".format(userInput).encode())
     return
 
 def remove_follower(db_conn, user, client_socket, userInput):
-    if rem_user_from_followers(db_conn, user, userInput): #TODO match with func in dataqueries 
+    if rem_user_from_followers(db_conn, user, userInput):
         client_socket.send("You have removed {} from your followers".format(userInput).encode())
     return
 
 def display_tweets_of_user(db_conn, user, client_socket, userInput):
-    tweets = get_tweets_of_user(db_conn, userInput) #TODO match with func in dataqueries
-    pinned_tweets = get_pinned_tweets_of_user(db_conn, userInput) #TODO match with func in dataqueries
+    tweets = get_tweets_of_user(db_conn, userInput)
+    pinned_tweets = get_pinned_tweets_of_user(db_conn, userInput)
     output = f"""
         Pinned tweets of {userInput}:
 
@@ -142,7 +142,7 @@ def search_registered_users(db_conn, client_socket, user):
     Enter username: 
     """.encode())
     userInput = client_socket.recv(BUFF).decode()
-    following, follower = get_follow_update(db_conn, user, userInput) #TODO match this with func in dataqueries
+    following, follower = get_follow_update(db_conn, user, userInput)
     while (True):
         if following and follower:
             client_socket.send(
@@ -246,7 +246,7 @@ def format_tweet(tweet):
 
 def hashtags_and_tweets(db_conn, client_socket):
     #TODO Display 5 trending tweets skip one line and then display the tweets with that mentioned hashtags
-    trending = get_trending_hashtags(db_conn) #TODO match with func in dataqueries
+    trending = get_trending_hashtags(db_conn)
     client_socket.send(
         f"""
         TOP 5 Trending Hashtags:
@@ -260,7 +260,7 @@ def hashtags_and_tweets(db_conn, client_socket):
         """.encode()
     )
     response = client_socket.recv(BUFF).decode()
-    tweets = get_tweets_by_hashtag(db_conn, response[1:]) #TODO match with func in dataqueries
+    tweets = get_tweets_by_hashtag(db_conn, response[1:])
     # we will only display max 10 recent tweets of that hashtag
     output = f"""
         Recent tweets with {response}:
