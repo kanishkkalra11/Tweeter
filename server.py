@@ -54,6 +54,8 @@ def home_page(db_conn, user, client_socket):
         5: Search a registered user 
         6: View Tweets by hashtags (Top 5 trending will be shown)
         7: Post a Tweet (max 256 characters)
+        8: Your Profile
+        9: Pin a Tweet
         0: Logout
         """.encode())
         option = client_socket.recv(1024).decode()
@@ -82,6 +84,12 @@ def home_page(db_conn, user, client_socket):
         
         elif(option == "7"):
             post_tweet(db_conn, client_socket, user)
+
+        elif(option == "8"):
+            user_profile(db_conn, client_socket, user)
+        
+        elif(option == "9"):
+            pin_tweet(db_conn, client_socket, user)
             
         elif(option == "0"):
             return

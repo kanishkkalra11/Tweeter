@@ -22,7 +22,7 @@ def authenticate(db_conn, client_socket):
             password = client_socket.recv(BUFF).decode()
             
             if (check_user_pass(db_conn, username, password)): 
-                client_socket.send("Login successful. Welcome back.")
+                client_socket.send("Login successful. Welcome back.".encode())
                 break
             else:
                 client_socket.send("Invalid username or password.".encode())
@@ -49,7 +49,7 @@ def authenticate(db_conn, client_socket):
             break
 
         else:
-            client_socket.send("Please select a valid option.")
+            client_socket.send("Please select a valid option.".encode())
 
     return username
 
@@ -298,7 +298,7 @@ def post_tweet(db_conn, client_socket, user):
         1: Write a new tweet
         2: Retweet an existing tweet
         3: Homepage
-        """
+        """.encode()
     )
     response = client_socket.recv(BUFF).decode()
     if response==1:
@@ -309,4 +309,30 @@ def post_tweet(db_conn, client_socket, user):
         return
     else:
         client_socket.send("Enter a valid response.".encode())
+    return
+
+def user_profile(db_conn, client_socket, user):
+    n_followers, n_following, n_tweets, pinned_tweets, other_tweets = get_user_profile(db_conn, user)
+    
+    pinned_output = ""
+    for tweet in pinned_tweets:
+        pinned_output += format_tweet(tweet)
+
+    others_output = ""
+    for tweet in other_tweets:
+        others_output += format_tweet(tweet)
+    
+    output = "MY PROFILE\n{} followers || {} following || {} tweets\nMy Pinned Tweets:\n{}My Recent Tweets:\n{}".format(n_followers, n_following, n_tweets, pinned_output, others_output)
+
+    client_socket.send(output.encode())
+    return
+
+def pin_tweet(db_conn, client_socket, user):
+    client_socket.send("Enter the tweet ID you want to pin: ".encode())
+    tweet_id = client_socket.recv(BUFF).decode()
+    if not check_tweet_of_user(db_conn, user, tweet_id): #TODO check func in dataqueries
+        client_socket.send("You can only pin your own tweets".encode())
+        return
+    if pin_new_tweet(db_conn, user, tweet_id): #TODO check func in dataqueries    
+        client_socket.send("Your tweet has been pinned".encode())
     return
