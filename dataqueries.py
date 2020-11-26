@@ -236,7 +236,7 @@ def pin_new_tweet(db_conn,username,tweet_id):
         for result in results:
             result = list(result)
         pinned_tweets = result[7]
-        if pinned_tweets is not NULL:
+        if pinned_tweets is not None:
             pinned_tweets = pinned_tweets + ',' + str(tweet_id)
         else:
             pinned_tweets = str(tweet_id)
@@ -265,7 +265,7 @@ def post_new_tweet(db_conn,username,tweet,retweet_id):
                 result[1] = result[1]+','+str(tw)
                 result[1] = result[2]+1
                 execute_query(db_conn,"DELETE FROM hashtags WHERE hashtag = {}".format(item))
-                execute_query(db_connm,"INSERT INTO hashtags VALUES ({},{},{})".format(result[0],result[1],result[2]))
+                execute_query(db_conn,"INSERT INTO hashtags VALUES ({},{},{})".format(result[0],result[1],result[2]))
             except:
                 execute_query(db_conn,"INSERT INTO hashtags VALUES ({},{},{})".format(item,str(tw),1))
         hashtags = ''
@@ -280,11 +280,11 @@ def post_new_tweet(db_conn,username,tweet,retweet_id):
         results = read_query(db_conn, "SELECT * FROM users WHERE username = {}".format(username))
         for result in results:
             result = list(result)
-        if result[5] is not NULL:
+        if result[5] is not None:
             result[5] = result[5]+','+str(tw)
         else:
             result[5] = str(tw)
-        execute_query(db_conn,"UPDATE users SET tweet_ids = {} WHERE username = {}".format(result[5],username)
+        execute_query(db_conn,"UPDATE users SET tweet_ids = {} WHERE username = {}".format(result[5],username))
         return True
     except:
         return False
@@ -304,7 +304,7 @@ def add_user_to_following(db_conn,username1,username2):
             result = list(result)
             break
         following = result[3]
-        if following is not NULL:
+        if following is not None:
             following = following + ',' + username2
         else:
             following = username2
@@ -313,7 +313,7 @@ def add_user_to_following(db_conn,username1,username2):
         for result in results:
             result = list(result)
         followers = result[2]
-        if followers is not NULL:
+        if followers is not None:
             followers = followers + ',' + username1
         else:
             followers = username1
@@ -335,7 +335,7 @@ def rem_user_from_following(db_conn, username1, username2):
             for i in range(m):
                 if following[i:i+l] == username2:
                     if i==0 and i+l==m:
-                        following = NULL
+                        following = None
                     elif i==0:
                         following = following[l+1:]
                     elif i+l==m:
@@ -345,7 +345,7 @@ def rem_user_from_following(db_conn, username1, username2):
                     execute_query(db_conn,"UPDATE users SET following = {} WHERE username = {}".format(following,username1))
                     break
         except:
-            # do nothing
+            hds = 9 #do nothing
         return True
     except:
         return False
@@ -364,7 +364,7 @@ def rem_user_from_followers(db_conn,username1,username2):
             for i in range(m):
                 if followers[i:i+l] == username2:
                     if i==0 and i+l==m:
-                        followers = NULL
+                        followers = None
                     elif i==0:
                         followers = followers[l+1:]
                     elif i+l==m:
@@ -374,7 +374,7 @@ def rem_user_from_followers(db_conn,username1,username2):
                     execute_query(db_conn,"UPDATE users SET followers = {} WHERE username = {}".format(followers,username1))
                     break
         except:
-            # do nothing
+            dffg = 9 # do nothing
         results = read_query(db_conn, "SELECT * FROM users WHERE username = {}".format(username2))
         for result in results:
             result = list(result)
@@ -386,7 +386,7 @@ def rem_user_from_followers(db_conn,username1,username2):
             for i in range(m):
                 if following[i:i+l] == username1:
                     if i==0 and i+l==m:
-                        following = NULL
+                        following = None
                     elif i==0:
                         following = following[l+1:]
                     elif i+l==m:
@@ -396,7 +396,7 @@ def rem_user_from_followers(db_conn,username1,username2):
                     execute_query(db_conn,"UPDATE users SET following = {} WHERE username = {}".format(following,username2))
                     break
         except:
-            # do nothing
+            sdbasd = 7 # do nothing
         return True
     except:
         return False
@@ -453,7 +453,7 @@ def check_tweet_of_user(db_conn,username,tweet_id):
         return True
     return False
 
-def my_profile(db_conn,username):
+def get_user_profile(db_conn,username):
     results = read_query(db_conn,"SELECT * FROM users WHERE username = {}".format(username))
     for result in results:
         result = list(result)
@@ -468,7 +468,7 @@ def my_profile(db_conn,username):
     ids = list(map(int, ids.split(',')))
     no_of_tweets = len(ids)
     pin_ids = result[7]
-    pin_ids = list(map(int, ids.split(',')))
+    pin_ids = list(map(int, pin_ids.split(',')))
     other_ids = list(set(ids)-set(pin_ids))
     get_pin_tweets = "SELECT * FROM tweets WHERE tweet_id IN {}".format(pin_ids)
     get_other_tweets = "SELECT * FROM tweets WHERE tweet_id IN {}".format(other_ids)

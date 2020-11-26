@@ -78,6 +78,7 @@ def followers_list(db_conn, client_socket, user):
     online_output=""
     for f in online_followers:
         online_output += ">> " + f + "\n"
+    others_output=""
     for f in other_followers:
         others_output += ">> " + f + "\n"
     output = "Online Followers:\n{}Other Followers{}".format(online_output, others_output)
@@ -91,6 +92,7 @@ def following_list(db_conn, client_socket, user):
     online_output=""
     for f in online_following:
         online_output += ">> " + f + "\n"
+    others_output=""
     for f in other_following:
         others_output += ">> " + f + "\n"
     output = "Online Following:\n{}Other Following{}".format(online_output, others_output)
