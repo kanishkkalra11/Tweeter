@@ -54,14 +54,10 @@ def authenticate(db_conn, client_socket):
     return username
 
 def news_feed(db_conn, client_socket, user):
-    while(True):
-        client_socket.send(
-        """
-        Please reply with an integer:
-        1: Enter the Tweet ID of Tweet you want to retweet
-        2: Home Page
-        """.encode())
-        response = client_socket.recv(BUFF).decode()
+    feed = get_news_feed(db_conn, user) #TODO match with func in dataqueries
+    output = "Your News Feed:\n"
+    for tweet in feed:
+        output += format_tweet(tweet)
     return
 
 def pinned_tweets_list(db_conn, client_socket, user):
@@ -76,7 +72,6 @@ def pinned_tweets_list(db_conn, client_socket, user):
     client_socket.send(output.encode())
     return
 
-
 def followers_list(db_conn, client_socket, user):
     # show active/online followers
     # give user a chance to delete a follower
@@ -89,7 +84,6 @@ def followers_list(db_conn, client_socket, user):
     output = "Online Followers:\n{}Other Followers{}".format(online_output, others_output)
     client_socket.send(output.encode())
     return
-
 
 def following_list(db_conn, client_socket, user):
     # give him option to unfollow
@@ -247,8 +241,6 @@ def format_tweet(tweet):
         display += "Retweet of {} tweeted by {}\n\t{}\n\n".format(tweet[6], tweet[7][2], tweet[7][1])
     return display
 
-
-
 def hashtags_and_tweets(db_conn, client_socket):
     #TODO Display 5 trending tweets skip one line and then display the tweets with that mentioned hashtags
     trending = get_trending_hashtags(db_conn) #TODO match with func in dataqueries
@@ -314,7 +306,7 @@ def post_tweet(db_conn, client_socket, user):
     elif response==2:
         retweet(db_conn, client_socket, user)
     elif response==3:
-        break
+        return
     else:
         client_socket.send("Enter a valid response.".encode())
     return
