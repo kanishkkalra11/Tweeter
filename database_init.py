@@ -117,13 +117,17 @@ execute_query(connection, insert_user)
 
 insert_hashtag = """
 INSERT INTO hashtags VALUES
-('deadman', '1', 1);
+('deadman', '1', 2),
+('wrestling', '1', 1),
+('gorgoyle' ,'1', 1),
+('strawman' ,'1', 1),
+('unagi', '1', 1);
 """
 execute_query(connection, insert_hashtag)
 
 insert_tweet = """
 INSERT INTO tweets VALUES
-(1, 'Hello twitter! #deadman', 'undertaker', 'deadman', '2020-11-18 21:57:31.755873', 0, NULL);
+(1, 'Hello twitter! #deadman #wrestling #deadman #gorgoyle #strawman #unagi', 'undertaker', 'deadman,wrestling,deadman,gorgoyle,strawman,unagi', '2020-11-18 21:57:31.755873', 0, NULL);
 """
 execute_query(connection, insert_tweet)
 
