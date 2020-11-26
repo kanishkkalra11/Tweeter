@@ -112,9 +112,9 @@ def home_page(db_conn, username, client_socket):
 
 def client_thread(db_conn, client_socket, address):
     user = authenticate(db_conn, client_socket) 
-    mark_user_online(db_conn, user)
+    # mark_user_online(db_conn, user)
     home_page(db_conn, user, client_socket) 
-    mark_user_offline(db_conn, user)
+    logout(db_conn, user)
     print(f"Closing client thread: {address}")
     client_socket.send("Thanks for using Tweeter. See you soon!")
     client_socket.shutdown(2)
@@ -139,8 +139,8 @@ while True:
 
 
 
-Kanishk Notes
-Prolly first thing that client gets should be register and login. Only when his login status is 1 should he be able to see all other options in the menu.
+# Kanishk Notes
+# Prolly first thing that client gets should be register and login. Only when his login status is 1 should he be able to see all other options in the menu.
 
 # Register user using username and password
 insert_user = "INSERT INTO users VALUES ({}, {}, NULL, NULL, 0, NULL, NULL, NULL)".format(username,password)

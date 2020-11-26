@@ -24,8 +24,5 @@ def get_tweets_by_hashtag(db_conn, hashtag):
     tweets = []
     return tweets
 
-def mark_user_online(db_conn, user):
-    return
-
-def mark_user_offline(db_conn, user):
+def logout(db_conn, user):
     return
