@@ -53,7 +53,7 @@ def authenticate(db_conn, client_socket):
 
     return username
 
-def recent_tweets(client_socket):
+def recent_tweets(db_conn, client_socket, user):
     while(True):
         client_socket.send(
         """
@@ -64,39 +64,36 @@ def recent_tweets(client_socket):
         response = client_socket.recv(BUFF).decode()
     return
 
-#TODO database input for func
-def pinned_tweets(client_socket):
-#TODO
+def pinned_tweets_list(db_conn, client_socket, user):
+    #TODO
     return
 
-#TODO database input for func
-def followers_list(client_socket):
+
+def followers_list(db_conn, client_socket, user):
     # show active/online followers
     # give user a chance to delete a follower
-    #TODO
-    while(True):
-        client_socket.send(
-        """
-        Please reply with an integer:
-        1: Do you want to delete a follower? Which one?
-        2: Home Page
-        """.encode())
-        response = client_socket.recv(BUFF).decode()
+    online_followers, other_followers = get_followers_list(db_conn, user) #TODO match with func in dataqueries
+    online_output=""
+    for f in online_followers:
+        online_output += ">> " + f + "\n"
+    for f in other_followers:
+        others_output += ">> " + f + "\n"
+    output = "Online Followers:\n{}Other Followers{}".format(online_output, others_output)
+    client_socket.send(output.encode())
     return
 
-#TODO database input for func
-def following_list(client_socket):
+
+def following_list(db_conn, client_socket, user):
     # give him option to unfollow
     # list active/offline also
-    #TODO
-    while (True):
-        client_socket.send(
-        """
-        Please reply with an integer:
-        1: Do you want to unfollow a user? Which one?
-        2: Home Page
-        """.encode())
-        response = client_socket.recv(BUFF).decode()
+    online_following, other_following = get_following_list(db_conn, user) #TODO match with func in dataqueries
+    online_output=""
+    for f in online_following:
+        online_output += ">> " + f + "\n"
+    for f in other_following:
+        others_output += ">> " + f + "\n"
+    output = "Online Following:\n{}Other Following{}".format(online_output, others_output)
+    client_socket.send(output.encode())
     return
 
 def follow_user(db_conn, user, client_socket, userInput):
@@ -273,7 +270,7 @@ def hashtags_and_tweets(db_conn, client_socket):
     client_socket.send(output.encode())    
     return
    
-def post_tweet(client_socket):
+def post_tweet(db_conn, client_socket, user):
     #TODO
     # post
     return
