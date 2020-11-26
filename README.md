@@ -5,9 +5,10 @@ Networks Course Project
 ### Tasks
 - [x] Login/ Register a user
 - [x] Obscure Password
-- [ ] Search a user from registered users list
-- [ ] Follow/ unfollow users
-- [ ] Delete followers
+- [x] Search a user from registered users list
+- [x] Follow/ unfollow users
+- [x] Delete followers
+- [ ] Display list of online followers and following
 - [ ] Post tweets with hashtags
 - [ ] Retweet a tweet
 - [x] Display trending hashtags
