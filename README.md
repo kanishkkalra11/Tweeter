@@ -9,8 +9,8 @@ Networks Course Project
 - [x] Follow/ unfollow users
 - [x] Delete followers
 - [x] Display list of online followers and following
-- [ ] Post tweets with hashtags
-- [ ] Retweet a tweet
+- [x] Post tweets with hashtags
+- [x] Retweet a tweet
 - [x] Display trending hashtags
 - [x] Search tweets by hashtags
 - [ ] 1v1 chat session
