@@ -3,7 +3,6 @@ from dataqueries import *
 BUFF = 1024 #buffer size
 
 def authenticate(db_conn, client_socket):
-    #TODO login/register here
     while True:
         client_socket.send(
             """
@@ -242,7 +241,6 @@ def format_tweet(tweet):
     return display
 
 def hashtags_and_tweets(db_conn, client_socket):
-    #TODO Display 5 trending tweets skip one line and then display the tweets with that mentioned hashtags
     trending = get_trending_hashtags(db_conn)
     client_socket.send(
         f"""
@@ -330,9 +328,9 @@ def user_profile(db_conn, client_socket, user):
 def pin_tweet(db_conn, client_socket, user):
     client_socket.send("Enter the tweet ID you want to pin: ".encode())
     tweet_id = client_socket.recv(BUFF).decode()
-    if not check_tweet_of_user(db_conn, user, tweet_id): #TODO check func in dataqueries
+    if not check_tweet_of_user(db_conn, user, tweet_id):
         client_socket.send("You can only pin your own tweets".encode())
         return
-    if pin_new_tweet(db_conn, user, tweet_id): #TODO check func in dataqueries    
+    if pin_new_tweet(db_conn, user, tweet_id):   
         client_socket.send("Your tweet has been pinned".encode())
     return

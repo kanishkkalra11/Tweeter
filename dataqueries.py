@@ -231,57 +231,63 @@ def get_pinned_tweets_of_user(db_conn,username):
     # format => list of tweets, for each tweet => tweet_id, tweet, username, hashtags, timestamp, is_retweet, retweet_id
 
 def pin_new_tweet(db_conn,username,tweet_id):
-    results = read_query(db_conn,"SELECT * FROM users WHERE username = {}".format(username))
-    for result in results:
-        result = list(result)
-    pinned_tweets = result[7]
-    if pinned_tweets is not NULL:
-        pinned_tweets = pinned_tweets + ',' + str(tweet_id)
-    else:
-        pinned_tweets = str(tweet_id)
-    execute_query(db_conn,"UPDATE users SET pinned_tweets_ids = {} WHERE username = {}".format(pinned_tweets,username))
-    return
+    try:
+        results = read_query(db_conn,"SELECT * FROM users WHERE username = {}".format(username))
+        for result in results:
+            result = list(result)
+        pinned_tweets = result[7]
+        if pinned_tweets is not NULL:
+            pinned_tweets = pinned_tweets + ',' + str(tweet_id)
+        else:
+            pinned_tweets = str(tweet_id)
+        execute_query(db_conn,"UPDATE users SET pinned_tweets_ids = {} WHERE username = {}".format(pinned_tweets,username))
+        return True
+    except:
+        return False
 
 def post_new_tweet(db_conn,username,tweet,retweet_id):
-    now = str(datetime.now())
-    h = re.findall(r"#(\w+)", tweet)
-    results = read_query(db_conn, "SELECT * FROM current_ids")
-    for result in results:
-        curids = list(result)
-        break
-    tw = curids[0] + 1
-    ch = curids[1]
-    execute_query(db_conn,"DELETE FROM current_ids")
-    execute_query(db_conn,"INSERT INTO current_ids VALUES ({},{})".format(tw,ch))
-    for item in h:
-        try:
-            results = read_query(db_conn, "SELECT * FROM hashtags WHERE hashtag = {}".format(item))
-            for result in results:
-                result = list(result)
-            result[1] = result[1]+','+str(tw)
-            result[1] = result[2]+1
-            execute_query(db_conn,"DELETE FROM hashtags WHERE hashtag = {}".format(item))
-            execute_query(db_connm,"INSERT INTO hashtags VALUES ({},{},{})".format(result[0],result[1],result[2]))
-        except:
-            execute_query(db_conn,"INSERT INTO hashtags VALUES ({},{},{})".format(item,str(tw),1))
-    hashtags = ''
-    for item in h:
-        hashtags = hashtags + item + ','
-    hashatags = hashtags[:-1]
-    if not retweet_id: 
-        insert_tweet = "INSERT INTO tweets VALUES ({}, {}, {}, {}, {}, 0, NULL)".format(tw,tweet,username,hashtags,now)
-    else:
-        insert_tweet = "INSERT INTO tweets VALUES ({}, {}, {}, {}, {}, 1, {})".format(tw,tweet,username,hashtags,now,retweet_id)
-    execute_query(db_conn,insert_tweet)
-    results = read_query(db_conn, "SELECT * FROM users WHERE username = {}".format(username))
-    for result in results:
-        result = list(result)
-    if result[5] is not NULL:
-        result[5] = result[5]+','+str(tw)
-    else:
-        result[5] = str(tw)
-    execute_query(db_conn,"UPDATE users SET tweet_ids = {} WHERE username = {}".format(result[5],username)
-    return
+    try:
+        now = str(datetime.now())
+        h = re.findall(r"#(\w+)", tweet)
+        results = read_query(db_conn, "SELECT * FROM current_ids")
+        for result in results:
+            curids = list(result)
+            break
+        tw = curids[0] + 1
+        ch = curids[1]
+        execute_query(db_conn,"DELETE FROM current_ids")
+        execute_query(db_conn,"INSERT INTO current_ids VALUES ({},{})".format(tw,ch))
+        for item in h:
+            try:
+                results = read_query(db_conn, "SELECT * FROM hashtags WHERE hashtag = {}".format(item))
+                for result in results:
+                    result = list(result)
+                result[1] = result[1]+','+str(tw)
+                result[1] = result[2]+1
+                execute_query(db_conn,"DELETE FROM hashtags WHERE hashtag = {}".format(item))
+                execute_query(db_connm,"INSERT INTO hashtags VALUES ({},{},{})".format(result[0],result[1],result[2]))
+            except:
+                execute_query(db_conn,"INSERT INTO hashtags VALUES ({},{},{})".format(item,str(tw),1))
+        hashtags = ''
+        for item in h:
+            hashtags = hashtags + item + ','
+        hashatags = hashtags[:-1]
+        if not retweet_id: 
+            insert_tweet = "INSERT INTO tweets VALUES ({}, {}, {}, {}, {}, 0, NULL)".format(tw,tweet,username,hashtags,now)
+        else:
+            insert_tweet = "INSERT INTO tweets VALUES ({}, {}, {}, {}, {}, 1, {})".format(tw,tweet,username,hashtags,now,retweet_id)
+        execute_query(db_conn,insert_tweet)
+        results = read_query(db_conn, "SELECT * FROM users WHERE username = {}".format(username))
+        for result in results:
+            result = list(result)
+        if result[5] is not NULL:
+            result[5] = result[5]+','+str(tw)
+        else:
+            result[5] = str(tw)
+        execute_query(db_conn,"UPDATE users SET tweet_ids = {} WHERE username = {}".format(result[5],username)
+        return True
+    except:
+        return False
 
 def get_tweet_by_id(db_conn,tweet_id):
     results = read_query(db_conn,"SELECT * FROM tweets WHERE tweet_id = {}".format(tweet_id))
@@ -436,7 +442,7 @@ def get_news_feed(db_conn,username):
     except:
         return tweets
 
-def check_tweet_user(db_conn,username,tweet_id):
+def check_tweet_of_user(db_conn,username,tweet_id):
     results = read_query(db_conn,"SELECT * FROM users WHERE username = {}".format(username))
     for result in results:
         result = list(result)
