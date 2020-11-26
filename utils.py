@@ -44,7 +44,8 @@ def authenticate(db_conn, client_socket):
                     client_socket.send("Password does not match".encode())
                 else:
                     break
-            register_new_user(db_conn, username, password)
+            if not register_new_user(db_conn, username, password):
+                client_socket.send("Registration was unsuccessful.".encode())
             break
 
         else:
@@ -52,9 +53,7 @@ def authenticate(db_conn, client_socket):
 
     return username
 
-#TODO database input for func
 def recent_tweets(client_socket):
-#TODO
     while(True):
         client_socket.send(
         """
@@ -100,58 +99,154 @@ def following_list(client_socket):
         response = client_socket.recv(BUFF).decode()
     return
 
-def follow_user(client_socket, username):
+def follow_user(db_conn, user, client_socket, userInput):
+    if add_user_to_following(db_conn, user, userInput): #TODO match with func in dataqueries 
+        client_socket.send("You are now following {}".format(userInput).encode())
     return
 
-def unfollow_user(client_socket, username):
+def unfollow_user(db_conn, user, client_socket, userInput):
+    if rem_user_from_following(db_conn, user, userInput): #TODO match with func in dataqueries 
+        client_socket.send("You have unfollowed {}".format(userInput).encode())
     return
 
-def remove_follower(client_socket, username):
+def remove_follower(db_conn, user, client_socket, userInput):
+    if rem_user_from_followers(db_conn, user, userInput): #TODO match with func in dataqueries 
+        client_socket.send("You have removed {} from your followers".format(userInput).encode())
     return
 
-def display_tweets_of_user(client_socket, username):
+def display_tweets_of_user(db_conn, user, client_socket, userInput):
+    tweets = get_tweets_of_user(db_conn, userInput) #TODO match with func in dataqueries
+    pinned_tweets = get_pinned_tweets_of_user(db_conn, userInput) #TODO match with func in dataqueries
+    output = f"""
+        Pinned tweets of {userInput}:
+
+
+        """
+    for tweet in pinned_tweets:
+        output += format_tweet(tweet)
+
+    output += "Recent tweets of {}:\n\n".format(userInput)
+    for tweet in tweets:
+        output += format_tweet(tweet)
+
+    client_socket.send(output.encode())
     return
 
-def chat_with_user(client_socket, username):
+def chat_with_user(db_conn, user, client_socket, userInput):
+    #TODO setup 1v1 chat sessions
     return
 
-def search_registered_users(db_conn, client_socket):
+def search_registered_users(db_conn, client_socket, user):
     client_socket.send(
     """
     Enter username: 
     """.encode())
-    username = client_socket.recv(BUFF).decode()
+    userInput = client_socket.recv(BUFF).decode()
+    following, follower = get_follow_update(db_conn, user, userInput) #TODO match this with func in dataqueries
     while (True):
-        client_socket.send(
-        """
-        Please select one:
-        1: Follow this user 
-        2: Unfollow this user
-        3: Remove user from my followers
-        4: Display users' tweets
-        5: Chat with user
-        6: Home Page
-        """.encode())
-        response = client_socket.recv(BUFF).decode()
-        if (response==1):
-            follow_user(client_socket, username)
-        elif (response==2):
-            unfollow_user(client_socket, username)
-        elif (response==3):
-            remove_follower(client_socket, username)
-        elif (response==4):
-            display_tweets_of_user(client_socket, username)
-        elif (response==5):
-            chat_with_user(client_socket, username)
-        elif (response==6):
-            break
+        if following and follower:
+            client_socket.send(
+            """
+            Please select one:
+            1: Unfollow this user
+            2: Remove user from my followers
+            3: Display users' tweets
+            4: Chat with user
+            5: Home Page
+            """.encode())
+            response = client_socket.recv(BUFF).decode()
+            if (response==1):
+                unfollow_user(db_conn, user, client_socket, userInput)
+                following = False
+            elif (response==2):
+                remove_follower(db_conn, user, client_socket, userInput)
+                follower = False
+            elif (response==3):
+                display_tweets_of_user(db_conn, user, client_socket, userInput)
+            elif (response==4):
+                chat_with_user(db_conn, user, client_socket, userInput)
+            elif (response==5):
+                break
+            else:
+                client_socket.send("Enter a valid response.".encode())
+        elif follower:
+            client_socket.send(
+            """
+            Please select one:
+            1: Follow this user
+            2: Remove user from my followers
+            3: Display users' tweets
+            4: Home Page
+            """.encode())
+            response = client_socket.recv(BUFF).decode()
+            if (response==1):
+                follow_user(db_conn, user, client_socket, userInput)
+                following = True
+            elif (response==2):
+                remove_follower(db_conn, user, client_socket, userInput)
+                follower = False
+            elif (response==3):
+                display_tweets_of_user(db_conn, user, client_socket, userInput)
+            elif (response==4):
+                break
+            else:
+                client_socket.send("Enter a valid response.".encode())
+        elif following:
+            client_socket.send(
+            """
+            Please select one:
+            1: Unfollow this user
+            2: Display users' tweets
+            3: Home Page
+            """.encode())
+            response = client_socket.recv(BUFF).decode()
+            if (response==1):
+                unfollow_user(db_conn, user, client_socket, userInput)
+                following = False
+            elif (response==2):
+                display_tweets_of_user(db_conn, user, client_socket, userInput)
+            elif (response==3):
+                break
+            else:
+                client_socket.send("Enter a valid response.".encode())
         else:
-            client_socket.send("Enter a valid response.".encode())
+            client_socket.send(
+            """
+            Please select one:
+            1: Follow this user
+            2: Display users' tweets
+            3: Home Page
+            """.encode())
+            response = client_socket.recv(BUFF).decode()
+            if (response==1):
+                follow_user(db_conn, user, client_socket, userInput)
+                following = True
+            elif (response==2):
+                display_tweets_of_user(db_conn, user, client_socket, userInput)
+            elif (response==3):
+                break
+            else:
+                client_socket.send("Enter a valid response.".encode())
+
     return
-  
+
+def format_tweet(tweet):
+    """
+    tweet: [tweet_id, tweet, username, hashtags, timestamp, is_retweet, retweet_id, retweet_obj(optional)]
+    returns: stringified tweet for display in CLI
+    """
+
+    display = ">> {} tweeted by {} on {}\n\t{}\n".format(tweet[0], tweet[2], tweet[4], tweet[1])
+    if tweet[5]:
+        #is a retweet
+        display += "Retweet of {} tweeted by {}\n\t{}\n\n".format(tweet[6], tweet[7][2], tweet[7][1])
+    return display
+
+
+
 def hashtags_and_tweets(db_conn, client_socket):
     #TODO Display 5 trending tweets skip one line and then display the tweets with that mentioned hashtags
-    trending = get_trending_hashtags(db_conn)
+    trending = get_trending_hashtags(db_conn) #TODO match with func in dataqueries
     client_socket.send(
         f"""
         TOP 5 Trending Hashtags:
@@ -165,14 +260,16 @@ def hashtags_and_tweets(db_conn, client_socket):
         """.encode()
     )
     response = client_socket.recv(BUFF).decode()
-    tweets = get_tweets_by_hashtag(db_conn, response)
+    tweets = get_tweets_by_hashtag(db_conn, response[1:]) #TODO match with func in dataqueries
     # we will only display max 10 recent tweets of that hashtag
     output = f"""
         Recent tweets with {response}:
-    
+
+
         """
     for tweet in tweets:
-        output += ">> " + tweet + "\n"
+        output += format_tweet(tweet)
+        
     client_socket.send(output.encode())    
     return
    
