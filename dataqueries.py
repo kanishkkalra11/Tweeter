@@ -2,6 +2,7 @@ from datetime import datetime
 import re
 
 BUFF = 1024 #buffer size
+DISPLAY_TWEETS = 10 #Number of tweets to display on CLI
 
 def execute_query(connection, query):
     cursor = connection.cursor()
@@ -83,8 +84,8 @@ def get_tweets_by_hashtag(db_conn, hashtag):
             result = result + m
         retr.append(result)
     retr.sort(key = lambda x:(x[4]),reverse=True)
-    if len(retr)>10:
-        retr = retr[:10]
+    if len(retr)>DISPLAY_TWEETS:
+        retr = retr[:DISPLAY_TWEETS]
     return retr
     # format => list of tweets, for each tweet => tweet_id, tweet, username, hashtags, timestamp, is_retweet, retweet_id
 
@@ -121,8 +122,8 @@ def get_tweets_of_user(db_conn, username):
             result = result + m
         retr.append(result)
     retr.sort(key = lambda x:(x[4]),reverse=True)
-    if len(retr)>10:
-        retr = retr[:10]
+    if len(retr)>DISPLAY_TWEETS:
+        retr = retr[:DISPLAY_TWEETS]
     return retr
     # format => list of tweets, for each tweet => tweet_id, tweet, username, hashtags, timestamp, is_retweet, retweet_id
 
@@ -229,7 +230,7 @@ def get_pinned_tweets_of_user(db_conn,username):
     return retr
     # format => list of tweets, for each tweet => tweet_id, tweet, username, hashtags, timestamp, is_retweet, retweet_id
 
-def pin_tweet(db_conn,username,tweet_id):
+def pin_new_tweet(db_conn,username,tweet_id):
     results = read_query(db_conn,"SELECT * FROM users WHERE username = {}".format(username))
     for result in results:
         result = list(result)
@@ -394,7 +395,7 @@ def rem_user_from_followers(db_conn,username1,username2):
     except:
         return False
 
-def news_feed(db_conn,username):
+def get_news_feed(db_conn,username):
     tweets = []
     results = read_query(db_conn,"SELECT * FROM users WHERE username = {}".format(username))
     for result in results:
@@ -429,5 +430,82 @@ def news_feed(db_conn,username):
                 break
             result = result + m
         tweets.append(result)
-    tweets.sort(key = lambda x:(x[4]),reverse=True)     
-    return tweets
+    tweets.sort(key = lambda x:(x[4]),reverse=True)
+    try:
+        return tweets[:DISPLAY_TWEETS]
+    except:
+        return tweets
+
+def check_tweet_user(db_conn,username,tweet_id):
+    results = read_query(db_conn,"SELECT * FROM users WHERE username = {}".format(username))
+    for result in results:
+        result = list(result)
+        break
+    ids = result[5]
+    ids = set(map(int,ids.split(',')))
+    if tweet_id in ids:
+        return True
+    return False
+
+def my_profile(db_conn,username):
+    results = read_query(db_conn,"SELECT * FROM users WHERE username = {}".format(username))
+    for result in results:
+        result = list(result)
+        break
+    followers = result[2]
+    following = result[3]
+    followers = followers.split(',')
+    following = following.split(',')
+    no_of_followers = len(followers)
+    no_of_following = len(following)
+    ids = result[5]
+    ids = list(map(int, ids.split(',')))
+    no_of_tweets = len(ids)
+    pin_ids = result[7]
+    pin_ids = list(map(int, ids.split(',')))
+    other_ids = list(set(ids)-set(pin_ids))
+    get_pin_tweets = "SELECT * FROM tweets WHERE tweet_id IN {}".format(pin_ids)
+    get_other_tweets = "SELECT * FROM tweets WHERE tweet_id IN {}".format(other_ids)
+    pin_tweets = []
+    other_tweets = []
+    results = read_query(db_conn,get_pin_tweets)
+    for result in results:
+        result = list(result)
+        a = result[4]
+        b = list(a.split())
+        c = list(map(int,b[0].split('-')))
+        d = list(b[1].split('.'))
+        c = c + list(map(int,d[0].split(':')))
+        c.append(int(d[1]))
+        e = datetime(c[0],c[1],c[2],c[3],c[4],c[5],c[6])
+        result[4] = e
+        if result[5] == 1:
+            mm = read_query(db_conn,"SELECT * FROM tweets WHERE tweet_id = {}".format(result[6]))
+            for m in mm:
+                m = list(m)
+                break
+            result = result + m
+        pin_tweets.append(result)
+    pin_tweets.sort(key = lambda x:(x[4]),reverse=True)
+    results = read_query(db_conn,get_other_tweets)
+    for result in results:
+        result = list(result)
+        a = result[4]
+        b = list(a.split())
+        c = list(map(int,b[0].split('-')))
+        d = list(b[1].split('.'))
+        c = c + list(map(int,d[0].split(':')))
+        c.append(int(d[1]))
+        e = datetime(c[0],c[1],c[2],c[3],c[4],c[5],c[6])
+        result[4] = e
+        if result[5] == 1:
+            mm = read_query(db_conn,"SELECT * FROM tweets WHERE tweet_id = {}".format(result[6]))
+            for m in mm:
+                m = list(m)
+                break
+            result = result + m
+        other_tweets.append(result)
+    other_tweets.sort(key = lambda x:(x[4]),reverse=True)
+    if len(other_tweets)>DISPLAY_TWEETS:
+        other_tweets = other_tweets[:DISPLAY_TWEETS]
+    return no_of_followers,no_of_following,no_of_tweets,pin_tweets,other_tweets

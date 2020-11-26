@@ -54,7 +54,7 @@ def authenticate(db_conn, client_socket):
     return username
 
 def news_feed(db_conn, client_socket, user):
-    feed = get_news_feed(db_conn, user) #TODO match with func in dataqueries
+    feed = get_news_feed(db_conn, user)
     output = "Your News Feed:\n"
     for tweet in feed:
         output += format_tweet(tweet)
