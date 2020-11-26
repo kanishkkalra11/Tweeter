@@ -12,11 +12,12 @@ client_socket.connect((HOST, PORT))
 print("Connected \n")
 
 while True:
-    data, addr = client_socket.recv(BUFF)
+    data = client_socket.recv(BUFF)
     data = data.decode('utf-8')
     print(data)
     #TODO add exit condition
-    if (data=="Password: "):
+    # time.sleep(0.5)
+    if (data=="Password: " or data=="Enter new password: " or data == "Confirm new password: "):
         input_ = getpass.getpass()
         client_socket.send(input_.encode())
     else:    

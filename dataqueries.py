@@ -8,31 +8,26 @@ def execute_query(connection, query):
     cursor = connection.cursor()
     cursor.execute(query)
     connection.commit()
-    # print("Query successful")
-    # except Error as err:
-    #     print(f"Error: '{err}'")
     return
 
 def read_query(connection, query):
     cursor = connection.cursor()
     result = None
-    # try:
     cursor.execute(query)
     result = cursor.fetchall()
     return result
-    # except Error as err:
-        # print(f"Error: '{err}'")
 
 def register_new_user(db_conn, username, password):
-    insert_user = "INSERT INTO users VALUES ({}, {}, NULL, NULL, 1, NULL, NULL, NULL)".format(username,password)
+    insert_user = "INSERT INTO users VALUES ('{}', '{}', NULL, NULL, 1, NULL, NULL, NULL)".format(username,password)
     try:
         execute_query(db_conn, insert_user)
         return True
     except:
         return False
 
+# TODO no exception is thrown
 def check_user_pass(db_conn, username, password):
-    change_status = "UPDATE users SET is_online = 1 WHERE username = {} AND password = {}".format(username,password)
+    change_status = "UPDATE users SET is_online = 1 WHERE username = '{}' AND password = '{}'".format(username,password)
     try:
         execute_query(db_conn,change_status)
         return True
@@ -40,13 +35,21 @@ def check_user_pass(db_conn, username, password):
         return False
 
 def check_user_exists(db_conn, username):
-    check_query = "SELECT * FROM users WHERE username = {}".format(username)
-    results = read_query(db_conn, check_query)
-    a = len(results)
-    if a==0:
+    check_query = """
+SELECT * FROM tweeter.users WHERE username = '{}'
+""".format(username)
+    try:
+        # print("dbhhfds")
+        _ = read_query(db_conn, check_query)
         return False
-    else:
+    except:
+        # print("dsfbsd")
         return True
+    # a = len(results)
+    # if a==0:
+    #     return False
+    # else
+    #     return True
 
 def get_trending_hashtags(db_conn):
     retrieve_tags = "SELECT hashtag FROM hashtags ORDER BY count DESC LIMIT 5"
@@ -57,17 +60,19 @@ def get_trending_hashtags(db_conn):
     return hashtags
 
 def get_tweets_by_hashtag(db_conn, hashtag):
-    get_tweet_ids = "SELECT tweet_ids FROM hashtags WHERE hashtag = {}".format(hashtag)
+    get_tweet_ids = "SELECT * FROM hashtags WHERE hashtag = '{}'".format(hashtag)
     results = read_query(db_conn, get_tweet_ids)
     for result in results:
         result = list(result)
     ids = result[1]
     ids = list(map(int, ids.split(',')))
-    get_tweets = "SELECT * FROM tweets WHERE tweet_id IN {}".format(ids)
-    results = read_query(db_conn, get_tweets)
     retr = []
-    for result in results:
-        result = list(result)
+    for id in ids:
+        get_tweets = "SELECT * FROM tweets WHERE tweet_id = {}".format(id)
+        results = read_query(db_conn, get_tweets)
+        for result in results:
+            result = list(result)
+            break
         a = result[4]
         b = list(a.split())
         c = list(map(int,b[0].split('-')))
@@ -90,12 +95,12 @@ def get_tweets_by_hashtag(db_conn, hashtag):
     # format => list of tweets, for each tweet => tweet_id, tweet, username, hashtags, timestamp, is_retweet, retweet_id
 
 def logout(db_conn, username):
-    change_status = "UPDATE users SET is_online = 0 WHERE username = {}".format(username)
+    change_status = "UPDATE users SET is_online = 0 WHERE username = '{}'".format(username)
     execute_query(db_conn,change_status)
     return
 
 def get_tweets_of_user(db_conn, username):
-    get_tweet_ids = "SELECT * FROM users WHERE username = {}".format(username)
+    get_tweet_ids = "SELECT * FROM users WHERE username = '{}'".format(username)
     results = read_query(db_conn, get_tweet_ids)
     for result in results:
         result = list(result)
@@ -133,7 +138,7 @@ def get_follow_update(db_conn,username1,username2):
 #return format - bool(i follow him), bool(he follows me)
     ret1 = True
     ret2 = True
-    results = read_query(db_conn, "SELECT * FROM users WHERE username = {}".format(username1))
+    results = read_query(db_conn, "SELECT * FROM users WHERE username = '{}'".format(username1))
     for result in results:
         result = list(result)
         break
@@ -158,7 +163,7 @@ def get_follow_update(db_conn,username1,username2):
     return ret1,ret2
 
 def get_followers_list(db_conn,username):
-    retr = "SELECT followers FROM users WHERE username = {}".format(username)
+    retr = "SELECT followers FROM users WHERE username = '{}'".format(username)
     results = read_query(db_conn, retr)
     for result in results:
         result = list(result)
@@ -168,7 +173,7 @@ def get_followers_list(db_conn,username):
     online_followers = []
     offline_followers = []
     for follower in followers:
-        results = read_query(db_conn,"SELECT * FROM users WHERE username = {}".format(follower))
+        results = read_query(db_conn,"SELECT * FROM users WHERE username = '{}'".format(follower))
         for result in results:
             result = list(result)
             if result[4] == 0:
@@ -179,7 +184,7 @@ def get_followers_list(db_conn,username):
     return online_followers,offline_followers
 
 def get_following_list(db_conn,username):
-    retr = "SELECT following FROM users WHERE username = {}".format(username)
+    retr = "SELECT following FROM users WHERE username = '{}'".format(username)
     results = read_query(db_conn, retr)
     for result in results:
         result = list(result)
@@ -189,7 +194,7 @@ def get_following_list(db_conn,username):
     online_following = []
     offline_following = []
     for person in following:
-        results = read_query(db_conn,"SELECT * FROM users WHERE username = {}".format(username))
+        results = read_query(db_conn,"SELECT * FROM users WHERE username = '{}'".format(username))
         for result in results:
             result = list(result)
             if result[4] == 0:
@@ -200,7 +205,7 @@ def get_following_list(db_conn,username):
     return online_following,offline_following
 
 def get_pinned_tweets_of_user(db_conn,username):
-    get_tweet_ids = "SELECT * FROM users WHERE username = {}".format(username)
+    get_tweet_ids = "SELECT * FROM users WHERE username = '{}'".format(username)
     results = read_query(db_conn, get_tweet_ids)
     for result in results:
         result = list(result)
@@ -232,7 +237,7 @@ def get_pinned_tweets_of_user(db_conn,username):
 
 def pin_new_tweet(db_conn,username,tweet_id):
     try:
-        results = read_query(db_conn,"SELECT * FROM users WHERE username = {}".format(username))
+        results = read_query(db_conn,"SELECT * FROM users WHERE username = '{}'".format(username))
         for result in results:
             result = list(result)
         pinned_tweets = result[7]
@@ -240,7 +245,7 @@ def pin_new_tweet(db_conn,username,tweet_id):
             pinned_tweets = pinned_tweets + ',' + str(tweet_id)
         else:
             pinned_tweets = str(tweet_id)
-        execute_query(db_conn,"UPDATE users SET pinned_tweets_ids = {} WHERE username = {}".format(pinned_tweets,username))
+        execute_query(db_conn,"UPDATE users SET pinned_tweets_ids = '{}' WHERE username = '{}'".format(pinned_tweets,username))
         return True
     except:
         return False
@@ -259,32 +264,32 @@ def post_new_tweet(db_conn,username,tweet,retweet_id):
         execute_query(db_conn,"INSERT INTO current_ids VALUES ({},{})".format(tw,ch))
         for item in h:
             try:
-                results = read_query(db_conn, "SELECT * FROM hashtags WHERE hashtag = {}".format(item))
+                results = read_query(db_conn, "SELECT * FROM hashtags WHERE hashtag = '{}'".format(item))
                 for result in results:
                     result = list(result)
                 result[1] = result[1]+','+str(tw)
                 result[1] = result[2]+1
-                execute_query(db_conn,"DELETE FROM hashtags WHERE hashtag = {}".format(item))
-                execute_query(db_conn,"INSERT INTO hashtags VALUES ({},{},{})".format(result[0],result[1],result[2]))
+                execute_query(db_conn,"DELETE FROM hashtags WHERE hashtag = '{}'".format(item))
+                execute_query(db_conn,"INSERT INTO hashtags VALUES ('{}','{}',{})".format(result[0],result[1],result[2]))
             except:
-                execute_query(db_conn,"INSERT INTO hashtags VALUES ({},{},{})".format(item,str(tw),1))
+                execute_query(db_conn,"INSERT INTO hashtags VALUES ('{}','{}',{})".format(item,str(tw),1))
         hashtags = ''
         for item in h:
             hashtags = hashtags + item + ','
         hashatags = hashtags[:-1]
         if not retweet_id: 
-            insert_tweet = "INSERT INTO tweets VALUES ({}, {}, {}, {}, {}, 0, NULL)".format(tw,tweet,username,hashtags,now)
+            insert_tweet = "INSERT INTO tweets VALUES ({}, '{}', '{}', '{}', '{}', 0, NULL)".format(tw,tweet,username,hashtags,now)
         else:
-            insert_tweet = "INSERT INTO tweets VALUES ({}, {}, {}, {}, {}, 1, {})".format(tw,tweet,username,hashtags,now,retweet_id)
+            insert_tweet = "INSERT INTO tweets VALUES ({}, '{}', '{}', '{}', '{}', 1, {})".format(tw,tweet,username,hashtags,now,retweet_id)
         execute_query(db_conn,insert_tweet)
-        results = read_query(db_conn, "SELECT * FROM users WHERE username = {}".format(username))
+        results = read_query(db_conn, "SELECT * FROM users WHERE username = '{}'".format(username))
         for result in results:
             result = list(result)
         if result[5] is not None:
             result[5] = result[5]+','+str(tw)
         else:
             result[5] = str(tw)
-        execute_query(db_conn,"UPDATE users SET tweet_ids = {} WHERE username = {}".format(result[5],username))
+        execute_query(db_conn,"UPDATE users SET tweet_ids = '{}' WHERE username = '{}'".format(result[5],username))
         return True
     except:
         return False
@@ -299,7 +304,7 @@ def get_tweet_by_id(db_conn,tweet_id):
 # follow someone using my username1 and his username2
 def add_user_to_following(db_conn,username1,username2):
     try:
-        results = read_query(db_conn, "SELECT * FROM users WHERE username = {}".format(username1))
+        results = read_query(db_conn, "SELECT * FROM users WHERE username = '{}'".format(username1))
         for result in results:
             result = list(result)
             break
@@ -308,8 +313,8 @@ def add_user_to_following(db_conn,username1,username2):
             following = following + ',' + username2
         else:
             following = username2
-        execute_query(db_conn,"UPDATE users SET following = {} WHERE username = {}".format(following,username1))
-        results = read_query(db_conn, "SELECT * FROM users WHERE username = {}".format(username2))
+        execute_query(db_conn,"UPDATE users SET following = '{}' WHERE username = '{}'".format(following,username1))
+        results = read_query(db_conn, "SELECT * FROM users WHERE username = '{}'".format(username2))
         for result in results:
             result = list(result)
         followers = result[2]
@@ -317,14 +322,14 @@ def add_user_to_following(db_conn,username1,username2):
             followers = followers + ',' + username1
         else:
             followers = username1
-        execute_query(db_conn,"UPDATE users SET followers = {} WHERE username = {}".format(followers,username2))
+        execute_query(db_conn,"UPDATE users SET followers = '{}' WHERE username = '{}'".format(followers,username2))
         return True
     except:
         return False
 
 def rem_user_from_following(db_conn, username1, username2):
     try:
-        results = read_query(db_conn, "SELECT * FROM users WHERE username = {}".format(username1))
+        results = read_query(db_conn, "SELECT * FROM users WHERE username = '{}'".format(username1))
         for result in results:
             result = list(result)
             break
@@ -342,7 +347,7 @@ def rem_user_from_following(db_conn, username1, username2):
                         following = following[:i-1]
                     else:
                         following = following[:i] + following[l+1:]
-                    execute_query(db_conn,"UPDATE users SET following = {} WHERE username = {}".format(following,username1))
+                    execute_query(db_conn,"UPDATE users SET following = '{}' WHERE username = '{}'".format(following,username1))
                     break
         except:
             hds = 9 #do nothing
@@ -353,7 +358,7 @@ def rem_user_from_following(db_conn, username1, username2):
 # delete follower using my username1 and his username2
 def rem_user_from_followers(db_conn,username1,username2):
     try:
-        results = read_query(db_conn, "SELECT * FROM users WHERE username = {}".format(username1))
+        results = read_query(db_conn, "SELECT * FROM users WHERE username = '{}'".format(username1))
         for result in results:
             result = list(result)
             break
@@ -371,11 +376,11 @@ def rem_user_from_followers(db_conn,username1,username2):
                         followers = followers[:i-1]
                     else:
                         followers = followers[:i] + followers[l+1:]
-                    execute_query(db_conn,"UPDATE users SET followers = {} WHERE username = {}".format(followers,username1))
+                    execute_query(db_conn,"UPDATE users SET followers = '{}' WHERE username = '{}'".format(followers,username1))
                     break
         except:
-            dffg = 9 # do nothing
-        results = read_query(db_conn, "SELECT * FROM users WHERE username = {}".format(username2))
+            garbage = 9 # do nothing
+        results = read_query(db_conn, "SELECT * FROM users WHERE username = '{}'".format(username2))
         for result in results:
             result = list(result)
             break
@@ -393,17 +398,17 @@ def rem_user_from_followers(db_conn,username1,username2):
                         following = following[:i-1]
                     else:
                         following = following[:i] + following[l+1:]
-                    execute_query(db_conn,"UPDATE users SET following = {} WHERE username = {}".format(following,username2))
+                    execute_query(db_conn,"UPDATE users SET following = '{}' WHERE username = '{}'".format(following,username2))
                     break
         except:
-            sdbasd = 7 # do nothing
+            garbage = 7 # do nothing
         return True
     except:
         return False
 
 def get_news_feed(db_conn,username):
     tweets = []
-    results = read_query(db_conn,"SELECT * FROM users WHERE username = {}".format(username))
+    results = read_query(db_conn,"SELECT * FROM users WHERE username = '{}'".format(username))
     for result in results:
         result = list(result)
         followers = result[2]
@@ -411,14 +416,14 @@ def get_news_feed(db_conn,username):
     followers = followers.split(',')
     ids = []
     for follower in followers:
-        mm = read_query(db_conn,"SELECT * FROM users WHERE username = {}".format(follower))
+        mm = read_query(db_conn,"SELECT * FROM users WHERE username = '{}'".format(follower))
         for m in mm:
             m = list(m)
             break
         id = m[5]
         id = list(map(int, id.split(',')))
         ids = ids + id
-    get_tweets = "SELECT * FROM tweets WHERE tweet_if IN {}".format(ids)
+    get_tweets = "SELECT * FROM tweets WHERE tweet_id IN {}".format(ids)
     results = read_query(db_conn,get_tweets)
     for result in results:
         a = result[4]
@@ -443,7 +448,7 @@ def get_news_feed(db_conn,username):
         return tweets
 
 def check_tweet_of_user(db_conn,username,tweet_id):
-    results = read_query(db_conn,"SELECT * FROM users WHERE username = {}".format(username))
+    results = read_query(db_conn,"SELECT * FROM users WHERE username = '{}'".format(username))
     for result in results:
         result = list(result)
         break
@@ -454,7 +459,7 @@ def check_tweet_of_user(db_conn,username,tweet_id):
     return False
 
 def get_user_profile(db_conn,username):
-    results = read_query(db_conn,"SELECT * FROM users WHERE username = {}".format(username))
+    results = read_query(db_conn,"SELECT * FROM users WHERE username = '{}'".format(username))
     for result in results:
         result = list(result)
         break

@@ -58,7 +58,9 @@ def home_page(db_conn, user, client_socket):
         9: Pin a Tweet
         0: Logout
         """.encode())
+        time.sleep(0.5)
         option = client_socket.recv(1024).decode()
+        print(option)
         if(option == "1"):
             news_feed(db_conn, client_socket, user) 
         # Display another menu (Enter the tweet ID of the tweet to Retweet) to user when he chooses option 1
@@ -79,7 +81,7 @@ def home_page(db_conn, user, client_socket):
             search_registered_users(db_conn, client_socket, user)
             # allow him to follow/unfollow that user
 
-        elif(option == "6"):
+        elif(option == '6'):
             hashtags_and_tweets(db_conn, client_socket)
         
         elif(option == "7"):
@@ -107,7 +109,7 @@ def client_thread(db_conn, client_socket, address):
     home_page(db_conn, user, client_socket) 
     logout(db_conn, user)
     print(f"Closing client thread: {address}")
-    client_socket.send("Thanks for using Tweeter. See you soon!")
+    client_socket.send("Thanks for using Tweeter. See you soon!".encode())
     client_socket.shutdown(2)
     client_socket.close()
     return
@@ -123,4 +125,4 @@ while True:
     client_socket, address = server_socket.accept()
     print(f"New client connected: {address}")
 
-    _thread.start_new_thread(client_thread, (client_socket, address))
+    _thread.start_new_thread(client_thread, (db_conn, client_socket, address))

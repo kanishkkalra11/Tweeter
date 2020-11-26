@@ -1,4 +1,5 @@
 from dataqueries import *
+import time
 
 BUFF = 1024 #buffer size
 
@@ -13,11 +14,13 @@ def authenticate(db_conn, client_socket):
         )
         response = client_socket.recv(BUFF).decode()
 
-        if (response=='1'):
+        if (response=='1'): #TODO
             #login
             client_socket.send("Username: ".encode())
+            time.sleep(0.5)
             username = client_socket.recv(BUFF).decode()
             client_socket.send("Password: ".encode())
+            time.sleep(0.5)
             password = client_socket.recv(BUFF).decode()
             
             if (check_user_pass(db_conn, username, password)): 
