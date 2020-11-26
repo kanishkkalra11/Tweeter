@@ -58,7 +58,7 @@ def home_page(db_conn, user, client_socket):
         """.encode())
         option = client_socket.recv(1024).decode()
         if(option == "1"):
-            recent_tweets(db_conn, client_socket, user) 
+            news_feed(db_conn, client_socket, user) 
         # Display another menu (Enter the tweet ID of the tweet to Retweet) to user when he chooses option 1
         
         elif(option == "2"):
