@@ -56,44 +56,48 @@ def home_page(db_conn, user, client_socket):
         7: Post a Tweet (max 256 characters)
         8: Your Profile
         9: Pin a Tweet
+        10: Chat Box
         0: Logout
         """.encode())
         # time.sleep(0.5)
         option = client_socket.recv(1024).decode()
         print(option)
-        if(option == "1"):
+        if (option == "1"):
             news_feed(db_conn, client_socket, user) 
         # Display another menu (Enter the tweet ID of the tweet to Retweet) to user when he chooses option 1
         
-        elif(option == "2"):
+        elif (option == "2"):
             pinned_tweets_list(db_conn, client_socket, user) 
         
-        elif(option == "3"):
+        elif (option == "3"):
             followers_list(db_conn, client_socket, user)
             # show active/online followers
             # give user a chance to delete a follower
 
-        elif(option == "4"):
+        elif (option == "4"):
             following_list(db_conn, client_socket, user)
             # give him option to unfollow
 
-        elif(option == "5"):
+        elif (option == "5"):
             search_registered_users(db_conn, client_socket, user)
             # allow him to follow/unfollow that user
 
-        elif(option == '6'):
+        elif (option == '6'):
             hashtags_and_tweets(db_conn, client_socket)
         
-        elif(option == "7"):
+        elif (option == "7"):
             post_tweet(db_conn, client_socket, user)
 
-        elif(option == "8"):
+        elif (option == "8"):
             user_profile(db_conn, client_socket, user)
         
-        elif(option == "9"):
+        elif (option == "9"):
             pin_tweet(db_conn, client_socket, user)
             
-        elif(option == "0"):
+        elif (option == "10"):
+            chat_box(db_conn, client_socket, user)
+        
+        elif (option == "0"):
             return
         
         else:
