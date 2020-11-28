@@ -20,6 +20,7 @@ while True:
     if (data=="Password: " or data=="Enter new password: " or data == "Confirm new password: "):
         input_ = getpass.getpass()
         client_socket.send(input_.encode())
+    elif (data=="Thanks for using Tweeter. See you soon!"): break
     else:    
         input_ = input()
         client_socket.send(input_.encode())
