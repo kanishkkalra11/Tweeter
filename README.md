@@ -13,7 +13,7 @@ Networks Course Project
 - [x] Retweet a tweet
 - [x] Display trending hashtags
 - [x] Search tweets by hashtags
-- [ ] 1v1 chat session
+- [x] 1v1 chat session
 - [x] Feed on home page
 - [x] Pin tweets for the user's home page
 - [ ] Group chat session
