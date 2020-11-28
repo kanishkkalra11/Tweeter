@@ -58,7 +58,7 @@ def home_page(db_conn, user, client_socket):
         9: Pin a Tweet
         0: Logout
         """.encode())
-        time.sleep(0.5)
+        # time.sleep(0.5)
         option = client_socket.recv(1024).decode()
         print(option)
         if(option == "1"):

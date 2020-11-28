@@ -158,17 +158,17 @@ def search_registered_users(db_conn, client_socket, user):
             5: Home Page
             """.encode())
             response = client_socket.recv(BUFF).decode()
-            if (response==1):
+            if (response=='1'):
                 unfollow_user(db_conn, user, client_socket, userInput)
                 following = False
-            elif (response==2):
+            elif (response=='2'):
                 remove_follower(db_conn, user, client_socket, userInput)
                 follower = False
-            elif (response==3):
+            elif (response=='3'):
                 display_tweets_of_user(db_conn, user, client_socket, userInput)
-            elif (response==4):
+            elif (response=='4'):
                 chat_with_user(db_conn, user, client_socket, userInput)
-            elif (response==5):
+            elif (response=='5'):
                 break
             else:
                 client_socket.send("Enter a valid response.".encode())
@@ -182,15 +182,15 @@ def search_registered_users(db_conn, client_socket, user):
             4: Home Page
             """.encode())
             response = client_socket.recv(BUFF).decode()
-            if (response==1):
+            if (response=='1'):
                 follow_user(db_conn, user, client_socket, userInput)
                 following = True
-            elif (response==2):
+            elif (response=='2'):
                 remove_follower(db_conn, user, client_socket, userInput)
                 follower = False
-            elif (response==3):
+            elif (response=='3'):
                 display_tweets_of_user(db_conn, user, client_socket, userInput)
-            elif (response==4):
+            elif (response=='4'):
                 break
             else:
                 client_socket.send("Enter a valid response.".encode())
@@ -203,12 +203,12 @@ def search_registered_users(db_conn, client_socket, user):
             3: Home Page
             """.encode())
             response = client_socket.recv(BUFF).decode()
-            if (response==1):
+            if (response=='1'):
                 unfollow_user(db_conn, user, client_socket, userInput)
                 following = False
-            elif (response==2):
+            elif (response=='2'):
                 display_tweets_of_user(db_conn, user, client_socket, userInput)
-            elif (response==3):
+            elif (response=='3'):
                 break
             else:
                 client_socket.send("Enter a valid response.".encode())
@@ -221,12 +221,12 @@ def search_registered_users(db_conn, client_socket, user):
             3: Home Page
             """.encode())
             response = client_socket.recv(BUFF).decode()
-            if (response==1):
+            if (response=='1'):
                 follow_user(db_conn, user, client_socket, userInput)
                 following = True
-            elif (response==2):
+            elif (response=='2'):
                 display_tweets_of_user(db_conn, user, client_socket, userInput)
-            elif (response==3):
+            elif (response=='3'):
                 break
             else:
                 client_socket.send("Enter a valid response.".encode())
@@ -304,11 +304,11 @@ def post_tweet(db_conn, client_socket, user):
         """.encode()
     )
     response = client_socket.recv(BUFF).decode()
-    if response==1:
+    if response=='1':
         make_new_tweet(db_conn, client_socket, user)
-    elif response==2:
+    elif response=='2':
         retweet(db_conn, client_socket, user)
-    elif response==3:
+    elif response=='3':
         return
     else:
         client_socket.send("Enter a valid response.".encode())
