@@ -373,7 +373,7 @@ def rem_user_from_followers(db_conn,username1,username2):
                         following = following[:i-1]
                         execute_query(db_conn,"UPDATE users SET following = '{}' WHERE username = '{}'".format(following,username2))
                     else:
-                        following = following[:i] + following[l+1:]
+                        following = following[:i] + following[i+l+1:]
                         execute_query(db_conn,"UPDATE users SET following = '{}' WHERE username = '{}'".format(following,username2))
                     break
         except:
@@ -396,7 +396,7 @@ def rem_user_from_followers(db_conn,username1,username2):
                         followers = followers[:i-1]
                         execute_query(db_conn,"UPDATE users SET followers = '{}' WHERE username = '{}'".format(followers,username1))
                     else:
-                        followers = followers[:i] + followers[l+1:]
+                        followers = followers[:i] + followers[i+l+1:]
                         execute_query(db_conn,"UPDATE users SET followers = '{}' WHERE username = '{}'".format(followers,username1))
                     break
         except:
@@ -543,3 +543,62 @@ def get_user_profile(db_conn,username):
     if len(other_tweets)>DISPLAY_TWEETS:
         other_tweets = other_tweets[:DISPLAY_TWEETS]
     return no_of_followers,no_of_following,no_of_tweets,pin_tweets,other_tweets
+
+def get_chats_of_user(db_conn, username):
+    retr = []
+    results = read_query(db_conn,"SELECT * FROM chats WHERE user1 = '{}'".format(username))
+    if len(results)!=0:
+        for result in results:
+            result = list(result)
+            retr.append(result[2])
+    results = read_query(db_conn,"SELECT * FROM chats WHERE user2 = '{}'".format(username))
+    if len(results)!=0:
+        for result in results:
+            result = list(result)
+            retr.append(result[1])
+    return retr
+
+def get_chat_with_user(db_conn, username1, username2):
+    results = read_query(db_conn,"SELECT * FROM chats WHERE user1 = '{}' AND user2 = '{}'".format(username1,username2))
+    if len(results)==0:
+        results = read_query(db_conn,"SELECT * FROM chats WHERE user1 = '{}' AND user2 = '{}'".format(username2,username1))
+    result = list(results[0])
+    return result[0], result[3]
+
+def start_new_chat(db_conn, username1, username2):
+    results = read_query(db_conn, "SELECT * FROM current_ids")
+    curids = list(results[0])
+    tw = curids[0]
+    ch = curids[1] + 1
+    execute_query(db_conn,"DELETE FROM current_ids")
+    execute_query(db_conn,"INSERT INTO current_ids VALUES ({},{})".format(tw,ch))
+    new_chat = "INSERT INTO chats VALUES ({}, '{}', '{}', '')".format(ch,username1,username2)
+    execute_query(db_conn,new_chat)
+    results = read_query(db_conn, "SELECT * FROM users WHERE username = '{}'".format(username1))
+    result = list(results[0])
+    if result[6] is not None:
+        result[6] = result[6]+','+str(ch)
+    else:
+        result[6] = str(ch)
+    execute_query(db_conn,"UPDATE users SET active_chats_ids = '{}' WHERE username = '{}'".format(result[6],username1))
+    results = read_query(db_conn, "SELECT * FROM users WHERE username = '{}'".format(username2))
+    result = list(results[0])
+    if result[6] is not None:
+        result[6] = result[6]+','+str(ch)
+    else:
+        result[6] = str(ch)
+    execute_query(db_conn,"UPDATE users SET active_chats_ids = '{}' WHERE username = '{}'".format(result[6],username2))
+    return ch
+
+def send_new_msg(db_conn, chat_id, msg_to_store):
+    try:
+        results = read_query(db_conn,"SELECT * FROM chats WHERE chat_id = {}".format(chat_id))
+        result = list(results[0])
+        if result[3] is not None:
+            result[3] = result[3] + msg_to_store
+        else:
+            result[3] = msg_to_store
+        execute_query(db_conn,"UPDATE chats SET chat = '{}' WHERE chat_id = {}".format(result[3],chat_id))
+        return True
+    except:
+        return False

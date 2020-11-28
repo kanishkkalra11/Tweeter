@@ -343,11 +343,11 @@ def pin_tweet(db_conn, client_socket, user):
     return
 
 def format_chat(chat_content, username):
-    if chat_content=="": return "Chat with {username}:\nYou don't have any messages yet.\n"
-    return "Chat with {username}:"+chat_content.replace("@","\n")+"\n"
+    if chat_content=="": return "Chat with {}:\nYou don't have any messages yet.\n".format(username)
+    return "Chat with {}:".format(username)+chat_content.replace("@","\n")+"\n"
 
 def chat_box(db_conn, client_socket, user):
-    active_chats = get_chats_of_user(db_conn, user) #TODO match with func in dataqueries ... should return a SET of usernames
+    active_chats = get_chats_of_user(db_conn, user)
     active_chats_output = "You have active chats with:\n"
     for u in active_chats:
         active_chats_output += ">> {}\n".format(u)
@@ -357,21 +357,18 @@ def chat_box(db_conn, client_socket, user):
     username = client_socket.recv(BUFF).decode()
     chat_content = ""
     if username in active_chats:
-        chat_id, chat_content = get_chat_with_user(db_conn, user, username) #TODO match with func in dataqueries ... should return a id, string
+        chat_id, chat_content = get_chat_with_user(db_conn, user, username)
     else:
-        chat_id = start_new_chat(db_conn, user, username) #TODO match with func in dataqueries .. initiate a new chat with empty string in msgs
+        chat_id = start_new_chat(db_conn, user, username)
     
     chat_content_output = format_chat(chat_content, username) + "Select an option:\n1:Send a message\n2:Homepage"
     client_socket.send(chat_content_output.encode())
 
     response = client_socket.recv(BUFF).decode()
     if response == '1':
-        client_socket.send("Enter your message: ")
+        client_socket.send("Enter your message: ".encode())
         msg = client_socket.recv(BUFF).decode()
-        msg_to_store = "@{user}: " + msg
-        if send_new_msg(db_conn, chat_id, msg_to_store): #TODO match with func in dataqueries ... return True
+        msg_to_store = "@{}: ".format(user) + msg
+        if send_new_msg(db_conn, chat_id, msg_to_store):
             client_socket.send("Your message has been sent\n".encode())
     return
-    
-
-

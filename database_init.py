@@ -133,7 +133,7 @@ execute_query(connection, insert_tweet)
 
 insert_chat = """
 INSERT INTO chats VALUES
-(1, 'undertaker', 'kane', "@undertaker:Hello my brother kane@kane:i will find you and kill you");
+(1, 'undertaker', 'kane', "@undertaker: Hello my brother kane@kane: i will find you and kill you");
 """
 execute_query(connection, insert_chat)
 
