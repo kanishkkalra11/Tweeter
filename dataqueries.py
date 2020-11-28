@@ -32,6 +32,8 @@ def check_user_pass(db_conn, username, password):
         return False
     result = list(results[0])
     if result[1]==password:
+        change_status = "UPDATE users SET is_online = 1 WHERE username = '{}'".format(username)
+        execute_query(db_conn,change_status)
         return True
     return False
 
@@ -130,29 +132,27 @@ def get_follow_update(db_conn,username1,username2):
     result = list(results[0])
     followers = result[2]
     following = result[3]
-    try:
-        l = len(username2)
-        m = len(followers)
-        for i in range(m):
-            if followers[i:i+l] == username2:
-                break
-    except:
+    if followers is None:
         ret2 = False
-    try:
-        l = len(username2)
-        m = len(following)
-        for i in range(m):
-            if following[i:i+l] == username2:
-                break
-    except:
+    else:
+        followers = set(followers.split(','))
+        if username2 not in followers:
+            ret2 = False
+    if following is None:
         ret1 = False
+    else:
+        following = set(following.split(','))
+        if username2 not in following:
+            ret1 = False
     return ret1,ret2
 
 def get_followers_list(db_conn,username):
-    retr = "SELECT followers FROM users WHERE username = '{}'".format(username)
+    retr = "SELECT * FROM users WHERE username = '{}'".format(username)
     results = read_query(db_conn, retr)
     result = list(results[0])
-    result = str(result[2])
+    result = result[2]
+    if result is None:
+        return [],[]
     followers = result.split(',')
     online_followers = []
     offline_followers = []
@@ -166,15 +166,17 @@ def get_followers_list(db_conn,username):
     return online_followers,offline_followers
 
 def get_following_list(db_conn,username):
-    retr = "SELECT following FROM users WHERE username = '{}'".format(username)
+    retr = "SELECT * FROM users WHERE username = '{}'".format(username)
     results = read_query(db_conn, retr)
     result = list(results[0])
-    result = str(results[3])
+    result = result[3]
+    if result is None:
+        return [],[]
     following = result.split(',')
     online_following = []
     offline_following = []
     for person in following:
-        results = read_query(db_conn,"SELECT * FROM users WHERE username = '{}'".format(username))
+        results = read_query(db_conn,"SELECT * FROM users WHERE username = '{}'".format(person))
         result = list(results[0])
         if result[4] == 0:
             offline_following.append(person)
@@ -307,14 +309,17 @@ def rem_user_from_following(db_conn, username1, username2):
             for i in range(m):
                 if followers[i:i+l] == username1:
                     if i==0 and i+l==m:
-                        followers = None
+                        followers = 'NULL'
+                        execute_query(db_conn,"UPDATE users SET followers = {} WHERE username = '{}'".format(followers,username2))
                     elif i==0:
                         followers = followers[l+1:]
+                        execute_query(db_conn,"UPDATE users SET followers = '{}' WHERE username = '{}'".format(followers,username2))
                     elif i+l==m:
                         followers = followers[:i-1]
+                        execute_query(db_conn,"UPDATE users SET followers = '{}' WHERE username = '{}'".format(followers,username2))
                     else:
                         followers = followers[:i] + followers[l+1:]
-                    execute_query(db_conn,"UPDATE users SET followers = '{}' WHERE username = '{}'".format(followers,username2))
+                        execute_query(db_conn,"UPDATE users SET followers = '{}' WHERE username = '{}'".format(followers,username2))
                     break
         except:
             garbage = 9 #do nothing
@@ -327,14 +332,17 @@ def rem_user_from_following(db_conn, username1, username2):
             for i in range(m):
                 if following[i:i+l] == username2:
                     if i==0 and i+l==m:
-                        following = None
+                        following = 'NULL'
+                        execute_query(db_conn,"UPDATE users SET following = {} WHERE username = '{}'".format(following,username1))
                     elif i==0:
                         following = following[l+1:]
+                        execute_query(db_conn,"UPDATE users SET following = '{}' WHERE username = '{}'".format(following,username1))
                     elif i+l==m:
                         following = following[:i-1]
+                        execute_query(db_conn,"UPDATE users SET following = '{}' WHERE username = '{}'".format(following,username1))
                     else:
                         following = following[:i] + following[l+1:]
-                    execute_query(db_conn,"UPDATE users SET following = '{}' WHERE username = '{}'".format(following,username1))
+                        execute_query(db_conn,"UPDATE users SET following = '{}' WHERE username = '{}'".format(following,username1))
                     break
         except:
             garbage = 9 #do nothing
@@ -356,14 +364,17 @@ def rem_user_from_followers(db_conn,username1,username2):
             for i in range(m):
                 if following[i:i+l] == username1:
                     if i==0 and i+l==m:
-                        following = None
+                        following = 'NULL'
+                        execute_query(db_conn,"UPDATE users SET following = {} WHERE username = '{}'".format(following,username2))
                     elif i==0:
                         following = following[l+1:]
+                        execute_query(db_conn,"UPDATE users SET following = '{}' WHERE username = '{}'".format(following,username2))
                     elif i+l==m:
                         following = following[:i-1]
+                        execute_query(db_conn,"UPDATE users SET following = '{}' WHERE username = '{}'".format(following,username2))
                     else:
                         following = following[:i] + following[l+1:]
-                    execute_query(db_conn,"UPDATE users SET following = '{}' WHERE username = '{}'".format(following,username2))
+                        execute_query(db_conn,"UPDATE users SET following = '{}' WHERE username = '{}'".format(following,username2))
                     break
         except:
             garbage = 7 # do nothing
@@ -376,14 +387,17 @@ def rem_user_from_followers(db_conn,username1,username2):
             for i in range(m):
                 if followers[i:i+l] == username2:
                     if i==0 and i+l==m:
-                        followers = None
+                        followers = 'NULL'
+                        execute_query(db_conn,"UPDATE users SET followers = {} WHERE username = '{}'".format(followers,username1))
                     elif i==0:
                         followers = followers[l+1:]
+                        execute_query(db_conn,"UPDATE users SET followers = '{}' WHERE username = '{}'".format(followers,username1))
                     elif i+l==m:
                         followers = followers[:i-1]
+                        execute_query(db_conn,"UPDATE users SET followers = '{}' WHERE username = '{}'".format(followers,username1))
                     else:
                         followers = followers[:i] + followers[l+1:]
-                    execute_query(db_conn,"UPDATE users SET followers = '{}' WHERE username = '{}'".format(followers,username1))
+                        execute_query(db_conn,"UPDATE users SET followers = '{}' WHERE username = '{}'".format(followers,username1))
                     break
         except:
             garbage = 9 # do nothing
@@ -395,12 +409,12 @@ def get_news_feed(db_conn,username):
     tweets = []
     results = read_query(db_conn,"SELECT * FROM users WHERE username = '{}'".format(username))
     result = list(results[0])
-    followers = result[2]
-    if followers is None:
+    following = result[3]
+    if following is None:
         return tweets
-    followers = followers.split(',')
+    following = following.split(',')
     ids = []
-    for follower in followers:
+    for follower in following:
         mm = read_query(db_conn,"SELECT * FROM users WHERE username = '{}'".format(follower))
         m = list(mm[0])
         id = m[5]

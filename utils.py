@@ -242,7 +242,7 @@ def format_tweet(tweet):
     display = ">> {} tweeted by {} on {}\n\t{}\n".format(tweet[0], tweet[2], tweet[4], tweet[1])
     if tweet[5]:
         #is a retweet
-        display += "Retweet of {} tweeted by {}\n\t{}\n\n".format(tweet[6], tweet[7][2], tweet[7][1])
+        display += "Retweet of {} tweeted by {}\n\t{}\n\n".format(tweet[6], tweet[9], tweet[8])
     return display
 
 def hashtags_and_tweets(db_conn, client_socket):
@@ -333,6 +333,7 @@ def user_profile(db_conn, client_socket, user):
 def pin_tweet(db_conn, client_socket, user):
     client_socket.send("Enter the tweet ID you want to pin: ".encode())
     tweet_id = client_socket.recv(BUFF).decode()
+    tweet_id = int(tweet_id)
     if not check_tweet_of_user(db_conn, user, tweet_id):
         client_socket.send("You can only pin your own tweets".encode())
         return
