@@ -60,6 +60,7 @@ def news_feed(db_conn, client_socket, user):
     output = "Your News Feed:\n"
     for tweet in feed:
         output += format_tweet(tweet)
+    client_socket.send(output.encode())
     return
 
 def pinned_tweets_list(db_conn, client_socket, user):
