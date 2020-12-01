@@ -116,7 +116,7 @@ if __name__ == "__main__":
 
     print("Starting")
     p = Pool(8)
-    result = p.map(xcute, [[net.hosts, i] for i in range(1,7)])
+    result = p.map(xcute, [[net.hosts, i] for i in range(1,9)])
     
     time.sleep(45)
     p.close()
