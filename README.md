@@ -9,7 +9,7 @@ This is a mini-version of Twitter based on client-server TCP socket programming 
 ### How to Run?
 Add your MySQL username and password in database_init.py and server.py. Initiaize databse using "python database_init.py".
 Run "python server.py" in terminal.
-Run "ython client.py"in terminal and follow the CLI. You can create multiple clients at one time as well.
+Run "python client.py"in terminal and follow the CLI. You can create multiple clients at one time as well.
 In order to test, run "python run_concurrent_clients.py".
 If all the dependencies are satisfied and a successful databse connection is made, the application should run smoothly.
 
