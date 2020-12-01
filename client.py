@@ -17,9 +17,9 @@ while True:
     print(data)
     #TODO add exit condition
     # time.sleep(0.5)
-    # if (data=="Password: " or data=="Enter new password: " or data == "Confirm new password: "):
-    #     input_ = getpass.getpass()
-    #     client_socket.send(input_.encode())
+    if (data=="Password: " or data=="Enter new password: " or data == "Confirm new password: "):
+        input_ = getpass.getpass(prompt="")
+        client_socket.send(input_.encode())
     if (data=="Thanks for using Tweeter. See you soon!"): break
     else:    
         input_ = input()
