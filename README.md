@@ -26,3 +26,6 @@ If all the dependencies are satisfied and a successful databse connection is mad
 - 1v1 chat session
 - News Feed home page
 - Pin tweets for the user's home page
+
+### Contributors
+- <a href = "https://github.com/kanishkkalra11"> Kanishk Kalra </a>
