@@ -19,12 +19,12 @@ while True:
     if (data=="Thanks for using Tweeter. See you soon!"): break
 
     if i==0: input_ = "2"
-    elif i==1: input_ = "monty"
-    elif i==2: input_ = "montypass"
-    elif i==3: input_ = "montypass"
+    elif i==1: input_ = "tonystark"
+    elif i==2: input_ = "ironman"
+    elif i==3: input_ = "ironman"
     elif i==4: input_ = "7"
     elif i==5: input_ = "1"
-    elif i==6: input_ = "oooo balle balle shawashawa #dancelover #talent"
+    elif i==6: input_ = "who is iron man? #me #notyou and wth is up with all these rashis? #iamrashi #iamnotrashi #meme"
     elif i==7: input_ = "0"
 
     print(input_)

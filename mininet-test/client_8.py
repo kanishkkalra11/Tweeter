@@ -19,12 +19,12 @@ while True:
     if (data=="Thanks for using Tweeter. See you soon!"): break
 
     if i==0: input_ = "2"
-    elif i==1: input_ = "monty"
-    elif i==2: input_ = "montypass"
-    elif i==3: input_ = "montypass"
+    elif i==1: input_ = "catlover"
+    elif i==2: input_ = "catssss"
+    elif i==3: input_ = "catssss"
     elif i==4: input_ = "7"
     elif i==5: input_ = "1"
-    elif i==6: input_ = "oooo balle balle shawashawa #dancelover #talent"
+    elif i==6: input_ = "I AM ALWAYS SEEING YOU you better not hurt dem cats #dontfuckwithcats #cats #catlover"
     elif i==7: input_ = "0"
 
     print(input_)

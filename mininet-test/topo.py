@@ -101,7 +101,7 @@ def xcute(inp):
     h = inp[0]
     i = inp[1]
     print("Exec", i)
-    h[i].sendCmd("python client_" + str(i) +".py")
+    h[2*i].sendCmd("python client_" + str(i) +".py")
     return "Done"
 
 if __name__ == "__main__":
@@ -115,8 +115,8 @@ if __name__ == "__main__":
     net.hosts[0].sendCmd("python server.py")
 
     print("Starting")
-    p = Pool(16)
-    result = p.map(xcute, [[net.hosts, i] for i in range(1,17)])
+    p = Pool(8)
+    result = p.map(xcute, [[net.hosts, i] for i in range(1,7)])
     
     time.sleep(45)
     p.close()

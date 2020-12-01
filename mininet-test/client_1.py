@@ -19,15 +19,15 @@ while True:
     if (data=="Thanks for using Tweeter. See you soon!"): break
 
     if i==0: input_ = "2"
-    elif i==1: input_ = "kavivvv"
-    elif i==2: input_ = "kavivvvpass"
-    elif i==3: input_ = "kavivvvpass"
+    elif i==1: input_ = "chikna"
+    elif i==2: input_ = "chiknapass"
+    elif i==3: input_ = "chiknapass"
     elif i==4: input_ = "7"
     elif i==5: input_ = "1"
-    elif i==6: input_ = "Hi i am new here!! #new #lovetweets"
+    elif i==6: input_ = "chalo pehle ye kr lete hai #meme"
     elif i==7: input_ = "0"
 
-    
+    print(input_)
     client_socket.send(input_.encode())
     i += 1
 
