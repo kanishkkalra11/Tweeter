@@ -15,8 +15,6 @@ while True:
     data = client_socket.recv(BUFF)
     data = data.decode('utf-8')
     print(data)
-    #TODO add exit condition
-    # time.sleep(0.5)
     if (data=="Password: " or data=="Enter new password: " or data == "Confirm new password: "):
         input_ = getpass.getpass(prompt="")
         client_socket.send(input_.encode())
