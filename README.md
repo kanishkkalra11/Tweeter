@@ -28,4 +28,6 @@ If all the dependencies are satisfied and a successful databse connection is mad
 - Pin tweets for the user's home page
 
 ### Contributors
+- <a href = "https://github.com/kavita-v"> Kavita Vaishnaw </a>
 - <a href = "https://github.com/kanishkkalra11"> Kanishk Kalra </a>
+- <a href = "https://github.com/mohitmina"> Mohit Mina </a>
