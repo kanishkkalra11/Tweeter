@@ -7,11 +7,12 @@ This is a mini-version of Twitter based on client-server TCP socket programming 
 - Python Libraries - MySQL connector, threading, regex, socket, getpass, mininet
 
 ### How to Run?
-Add your MySQL username and password in database_init.py and server.py. Initiaize databse using "python database_init.py".
-Run "python server.py" in terminal.
-Run "python client.py"in terminal and follow the CLI. You can create multiple clients at one time as well.
-In order to test, run "python run_concurrent_clients.py".
-If all the dependencies are satisfied and a successful databse connection is made, the application should run smoothly.
+- Add your MySQL username and password in database_init.py and server.py. 
+- Initialize the database using the command `python database_init.py`.
+- Run `python server.py` in terminal.
+- Run `python client.py` in terminal and follow the CLI. You can create multiple clients at one time as well.
+- In order to test, run `python run_concurrent_clients.py`.
+- If all the dependencies are satisfied and a successful database connection is made, the application should run smoothly.
 
 ### Features
 - Login/ Register a user
