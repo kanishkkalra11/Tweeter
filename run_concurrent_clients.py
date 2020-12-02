@@ -3,7 +3,7 @@ import os
 from multiprocessing import Pool
 
 def RUN(i):
-    os.system("python client_" + str(i) +".py")
+    os.system("python mininet-test/client_" + str(i) +".py")
     return "Done"
 
 if __name__ == "__main__":
