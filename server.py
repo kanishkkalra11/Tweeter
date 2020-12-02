@@ -12,7 +12,7 @@ import re
 # server configurations
 server_ip = socket.gethostname()
 server_port = 12345
-MAX_USERS = 32
+MAX_USERS =1024
 
 
 # Databases functions
