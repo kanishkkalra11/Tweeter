@@ -14,6 +14,8 @@ This is a mini-version of Twitter based on client-server TCP socket programming 
 - In order to test, run `python run_concurrent_clients.py`.
 - If all the dependencies are satisfied and a successful database connection is made, the application should run smoothly.
 
+Demo for the project- <a href = "https://drive.google.com/file/d/1LUEk5JtG0jy3rDieBA94Tt9F220w0D3c/view?usp=sharing">Link</a>
+
 ### Features
 - Login/ Register a user
 - Obscure Password
